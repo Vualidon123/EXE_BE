@@ -6,7 +6,7 @@
         public int userId { get; set; }
         public DateTime date { get; set; }
         public string detail { get; set; }
-        public int likes { get; set; }
+        public double likes { get; set; }
         public string title { get; set; }
     }
 }

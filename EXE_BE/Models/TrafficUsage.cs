@@ -20,7 +20,7 @@
         Train = 3,
         Bicycle = 4,
         Walking = 5,
-        Other = 6
+        Mixed = 6
     }
 
 }

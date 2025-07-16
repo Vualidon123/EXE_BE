@@ -10,5 +10,6 @@
         public virtual PlasticUsage PlasticUsage { get; set; }
         public virtual TrafficUsage TrafficUsage { get; set; }
         public virtual FoodUsage FoodUsage { get; set; }
+        public virtual EnergyUsage EnergyUsage { get; set; }
     }
 }
