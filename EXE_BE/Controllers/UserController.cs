@@ -37,10 +37,10 @@ namespace EXE_BE.Controllers
                 Message = result.Message,
                 User = new
                 {
-                    result.User!.Id,
-                    result.User.UserName,
-                    result.User.Email,
-                    result.User.PhoneNumber
+                    result.Data!.Id,
+                    result.Data.UserName,
+                    result.Data.Email,
+                    result.Data.PhoneNumber
                 }
             });
         }
