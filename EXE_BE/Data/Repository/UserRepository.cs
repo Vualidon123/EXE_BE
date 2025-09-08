@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
-namespace EXE_BE.Data
+namespace EXE_BE.Data.Repository
 {
     public class UserRepository
     {

@@ -7,6 +7,13 @@
         public DateTime Date { get; set; }
         public int Score { get; set; }
 
+        public int PlasticUsageId { get; set; }
+        public int TrafficUsageId { get; set; }
+        public int FoodUsageId { get; set; }
+
+        public int EnergyUsageId { get; set; }
+
+
         public virtual PlasticUsage PlasticUsage { get; set; }
         public virtual TrafficUsage TrafficUsage { get; set; }
         public virtual FoodUsage FoodUsage { get; set; }

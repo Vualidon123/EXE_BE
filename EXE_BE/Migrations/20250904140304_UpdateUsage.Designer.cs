@@ -3,6 +3,7 @@ using System;
 using EXE_BE.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EXE_BE.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250904140304_UpdateUsage")]
+    partial class UpdateUsage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,9 +33,6 @@ namespace EXE_BE.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("integer");
-
                     b.Property<float>("CO2emission")
                         .HasColumnType("real");
 
@@ -47,32 +47,7 @@ namespace EXE_BE.Migrations
                     b.ToTable("EnergyUsages");
                 });
 
-            modelBuilder.Entity("EXE_BE.Models.FoodUsage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("integer");
-
-                    b.Property<float>("CO2emission")
-                        .HasColumnType("real");
-
-                    b.Property<DateTime>("date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("score")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FoodUsages");
-                });
-
-            modelBuilder.Entity("EXE_BE.Models.ItemList.FoodItem", b =>
+            modelBuilder.Entity("EXE_BE.Models.FoodItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -93,10 +68,35 @@ namespace EXE_BE.Migrations
 
                     b.HasIndex("FoodUsageId");
 
-                    b.ToTable("FoodItems");
+                    b.ToTable("FoodItem");
                 });
 
-            modelBuilder.Entity("EXE_BE.Models.ItemList.PlasticItem", b =>
+            modelBuilder.Entity("EXE_BE.Models.FoodUsage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<float>("CO2emission")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("score")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FoodUsages");
+                });
+
+            modelBuilder.Entity("EXE_BE.Models.PlasticItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,7 +117,7 @@ namespace EXE_BE.Migrations
 
                     b.HasIndex("PlasticUsageId");
 
-                    b.ToTable("PlasticItems");
+                    b.ToTable("PlasticItem");
                 });
 
             modelBuilder.Entity("EXE_BE.Models.PlasticUsage", b =>
@@ -128,14 +128,14 @@ namespace EXE_BE.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("integer");
-
                     b.Property<float>("CO2emission")
                         .HasColumnType("real");
 
                     b.Property<DateTime>("date")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -247,7 +247,7 @@ namespace EXE_BE.Migrations
                     b.ToTable("UserActivities");
                 });
 
-            modelBuilder.Entity("EXE_BE.Models.ItemList.FoodItem", b =>
+            modelBuilder.Entity("EXE_BE.Models.FoodItem", b =>
                 {
                     b.HasOne("EXE_BE.Models.FoodUsage", null)
                         .WithMany("FoodItems")
@@ -256,7 +256,7 @@ namespace EXE_BE.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EXE_BE.Models.ItemList.PlasticItem", b =>
+            modelBuilder.Entity("EXE_BE.Models.PlasticItem", b =>
                 {
                     b.HasOne("EXE_BE.Models.PlasticUsage", null)
                         .WithMany("PlasticItems")
