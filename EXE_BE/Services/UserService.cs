@@ -1,4 +1,4 @@
-﻿using EXE_BE.Data;
+﻿using EXE_BE.Data.Repository;
 using EXE_BE.Models;
 using EXE_BE.Services.Models;
 using Microsoft.IdentityModel.Tokens;

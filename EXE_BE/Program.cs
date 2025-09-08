@@ -1,4 +1,5 @@
 using EXE_BE.Data;
+using EXE_BE.Data.Repository;
 using EXE_BE.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

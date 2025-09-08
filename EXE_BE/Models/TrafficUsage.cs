@@ -2,25 +2,25 @@
 {
     public class TrafficUsage
     {
-
-        
             public int Id { get; set; }
-            public int userId { get; set; }
+            public int ActivityId { get; set; }
             public DateTime date { get; set; }
             public float distance { get; set; }
             public Traffic_category trafficCategory { get; set; }
-            public int score { get; set; }
-            public int duration { get; set; } // Duration in minutes
+            public virtual UserActivities? UserActivities { get; set; }
+            public float CO2emission { get; set; }
+        
 
     }
     public enum Traffic_category
     {
-        Car = 1,
-        Bus = 2,
-        Train = 3,
-        Bicycle = 4,
-        Walking = 5,
-        Mixed = 6
+        GasolineCar = 1,//0.045 kg CO2 per km
+        Bus = 2,//0.102 kg CO2 per km
+        Train = 3,//0.041 kg CO2 per km
+        Bicycle = 4,//0 kg CO2 per km
+        Walking = 5,//0 kg CO2 per km
+        Plane = 6,//0.225 kg CO2 per km
+        DieselCar = 7,//0.23 kg CO2 per km
     }
 
 }
