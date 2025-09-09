@@ -12,6 +12,7 @@
 
         public subscription_type SubscriptionType { get; set; } // Subscription type (Free, Vip)
         public virtual List<UserActivities>? UserActivities { get; set; }
+        public virtual List<ChallengeProgress>? ChallengeProgresses { get; set; }
     }
     public enum user_role
     {

@@ -13,6 +13,8 @@ namespace EXE_BE.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<UserActivities> UserActivities { get; set; }
+        public DbSet<Challenge> Challenges { get; set; }
+        public DbSet<ChallengeProgress> ChallengeProgresses { get; set; }
         public DbSet<EnergyUsage> EnergyUsages { get; set; }
         public DbSet<FoodUsage> FoodUsages { get; set; }
         public DbSet<PlasticUsage> PlasticUsages { get; set; }
@@ -71,6 +73,17 @@ namespace EXE_BE.Data
                 .WithMany(pu => pu.PlasticItems)
                 .HasForeignKey(pi => pi.PlasticUsageId)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ChallengeProgress>()
+                .HasOne(cp => cp.Challenge)
+                .WithMany()
+                .HasForeignKey(cp => cp.ChallengeId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ChallengeProgress>()
+                .HasOne(cp => cp.User)
+                .WithMany(u => u.ChallengeProgresses)
+                .HasForeignKey(cp => cp.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(modelBuilder);
         }
     }
