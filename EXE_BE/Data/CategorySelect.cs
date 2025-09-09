@@ -32,26 +32,26 @@ namespace EXE_BE.Data
             switch (fooditem.FoodCategory)
             {
                 case food_category.Beef:
-                    co2PerKg = 27.0f;
+                    co2PerKg = 48.0f;
                     break;
                 case food_category.Lamb:
-                    co2PerKg = 39.2f;
+                    co2PerKg = 40f;
                     break;
                 case food_category.Pork:
-                    co2PerKg = 12.1f;
+                    co2PerKg = 10f;
                     break;
                 case food_category.Chicken:
-                    co2PerKg = 6.9f;
+                    co2PerKg = 8f;
                     break;
                 case food_category.Fish:
-                    co2PerKg = 6.1f;
+                    co2PerKg = 5f;
                     break;
                 case food_category.Eggs:
                     co2PerKg = 4.8f;
                     break;
                 case food_category.Rice:
                     co2PerKg = 4.0f;
-                    break;
+                    break;  
                 case food_category.Vegetables:
                     co2PerKg = 2.0f;
                     break;
@@ -119,22 +119,25 @@ namespace EXE_BE.Data
             switch (item.PlasticCategory)
             {
                 case plastic_category.PlasticBottle:
-                    co2PerKg = 1.5f;
+                    co2PerKg = 3;
                     break;
                 case plastic_category.PlasticBag:
-                    co2PerKg = 3.0f;
+                    co2PerKg = 1.9f;
                     break;
                 case plastic_category.PlasticCup:
-                    co2PerKg = 2.5f;
+                    co2PerKg = 3.25f;
                     break;
                 case plastic_category.PlasticStraw:
-                    co2PerKg = 4.0f;
+                    co2PerKg = 2f;
                     break;
                 case plastic_category.PlasticContainer:
-                    co2PerKg = 2.0f;
+                    co2PerKg = 1.85f;
                     break;
                 case plastic_category.Other:
-                    co2PerKg = 3.0f; // Average value for other plastic items
+                    co2PerKg = 2.75f; // https://woodly.com/carbon_neutrality/what-is-the-carbon-footprint-of-plastic,
+                                      //https://rmi.org/insight/plastics-extrusion-and-molding-greenhouse-gas-emissions-reporting-guidance
+                                      //https://plasticseurope.org/wp-content/uploads/2021/10/201009-Denkstatt-Report.pdf
+                                      //https://ccsi.columbia.edu/sites/default/files/content/COMET-making-plastics-emissions-transparent.pdf
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(item), "Unknown plastic category");
