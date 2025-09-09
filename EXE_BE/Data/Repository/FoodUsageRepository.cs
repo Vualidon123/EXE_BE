@@ -15,7 +15,7 @@ namespace EXE_BE.Data.Repository
 
         public async Task<FoodUsage> AddFoodUsageAsync(FoodUsage foodUsage)
         {
-            float co2PerKg;
+           /* float co2PerKg;
             switch (foodUsage.FoodItems?.FirstOrDefault()?.FoodCategory)
             {
                 case food_category.Beef:
@@ -47,14 +47,14 @@ namespace EXE_BE.Data.Repository
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(foodUsage.FoodItems), "Unknown food category");
-            }
+            }*/
 
 
             _context.FoodUsages.Add(foodUsage);
-            foreach (var item in foodUsage.FoodItems)
+            /*foreach (var item in foodUsage.FoodItems)
             {
                 _context.FoodItems.Add(item);
-            }
+            }*/
             await _context.SaveChangesAsync();
             return foodUsage;
         }

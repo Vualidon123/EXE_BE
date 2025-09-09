@@ -13,7 +13,7 @@ namespace EXE_BE.Data.Repository
         }
         public async Task<PlasticUsage> AddPlasticUsageAsync(PlasticUsage plasticUsage)
         {
-            float co2PerKg; // Average CO2 emission per kg of plastic waste
+           /* float co2PerKg; // Average CO2 emission per kg of plastic waste
             switch (plasticUsage.PlasticItems?.FirstOrDefault()?.PlasticCategory)
             {
                 case plastic_category.PlasticBottle:
@@ -37,12 +37,12 @@ namespace EXE_BE.Data.Repository
                 default:
                     throw new ArgumentOutOfRangeException(nameof(plasticUsage.PlasticItems), "Unknown plastic category");
             }
-            plasticUsage.CO2emission = ((float)co2PerKg * plasticUsage.PlasticItems.Sum(x => x.Weight));    
+            plasticUsage.CO2emission = ((float)co2PerKg * plasticUsage.PlasticItems.Sum(x => x.Weight));    */
             _context.PlasticUsages.Add(plasticUsage);
-            foreach (var item in plasticUsage.PlasticItems)
+           /* foreach (var item in plasticUsage.PlasticItems)
             {
                 _context.PlasticItems.Add(item);
-            }
+            }*/
             await _context.SaveChangesAsync();
             return plasticUsage;
         }
@@ -56,6 +56,11 @@ namespace EXE_BE.Data.Repository
                 Include(x => x.PlasticItems).
                 Where(x => x.UserActivities.UserId == userId).
                 ToListAsync();
+        }
+        public async Task UpdatePlasticUsageAsync(PlasticUsage plasticUsage)
+        {
+            _context.PlasticUsages.Update(plasticUsage);
+            await _context.SaveChangesAsync();
         }
     }
 

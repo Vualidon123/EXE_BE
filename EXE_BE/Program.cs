@@ -19,6 +19,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
 
+builder.Services.AddScoped<FoodUsageService>();
+builder.Services.AddScoped<FoodUsageRepository>();
+
+builder.Services.AddScoped<FoodItemRepository>();
+builder.Services.AddScoped<PlasticItemRepository>();
+builder.Services.AddScoped<CategorySelect>();
+
+builder.Services.AddScoped<EnergyUsageRepository>();
+builder.Services.AddScoped<EnergyUsageSerivce>();
+
+builder.Services.AddScoped<PlasticUsageRepository>();
+builder.Services.AddScoped<PlasticUsageService>();
+
+builder.Services.AddScoped<TrafficUsageRepository>();
+builder.Services.AddScoped<TrafficUsageSerivce>();
+
+builder.Services.AddScoped<UserActivitiesSerivce>();
+builder.Services.AddScoped<UserActivitiesRepository>();
+
 // Configure JWT authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

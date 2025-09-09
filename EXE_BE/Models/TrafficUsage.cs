@@ -1,4 +1,6 @@
-﻿namespace EXE_BE.Models
+﻿using System.Text.Json.Serialization;
+
+namespace EXE_BE.Models
 {
     public class TrafficUsage
     {
@@ -7,6 +9,7 @@
             public DateTime date { get; set; }
             public float distance { get; set; }
             public Traffic_category trafficCategory { get; set; }
+            [JsonIgnore]
             public virtual UserActivities? UserActivities { get; set; }
             public float CO2emission { get; set; }
         
