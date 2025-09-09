@@ -1,4 +1,5 @@
 ﻿using EXE_BE.Models.ItemList;
+using System.Text.Json.Serialization;
 
 namespace EXE_BE.Models
 {
@@ -11,6 +12,7 @@ namespace EXE_BE.Models
         /*public Food_category foodCategory { get; set; }*/
         public int score { get; set; }
         public List<FoodItem>? FoodItems { get; set; }
+        [JsonIgnore]
         public virtual UserActivities? UserActivities { get; set; }
     }
    

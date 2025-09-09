@@ -11,7 +11,7 @@ namespace EXE_BE.Data.Repository
         }
         public async Task<TrafficUsage> AddTrafficUsageAsync(TrafficUsage trafficUsage)
         {
-            double co2PerKm;
+          /*  double co2PerKm;
             switch (trafficUsage.trafficCategory)
             {
                 case Traffic_category.GasolineCar:
@@ -38,7 +38,7 @@ namespace EXE_BE.Data.Repository
             }
 
             // Assuming you have a property like DistanceInKm and Emission in TrafficUsage
-            trafficUsage.CO2emission = ((float)co2PerKm * trafficUsage.distance);
+            trafficUsage.CO2emission = ((float)co2PerKm * trafficUsage.distance);*/
             _context.TrafficUsages.Add(trafficUsage);
             await _context.SaveChangesAsync();
             return trafficUsage;

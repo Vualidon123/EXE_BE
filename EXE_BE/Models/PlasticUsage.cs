@@ -1,5 +1,6 @@
 ﻿using EXE_BE.Models.ItemList;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace EXE_BE.Models
 {
@@ -9,8 +10,10 @@ namespace EXE_BE.Models
         public int ActivityId { get; set; }
         public  DateTime date {  get; set; }
         public float CO2emission { get; set; }
+        public List<PlasticItem>? PlasticItems { get; set; }
 
+        [JsonIgnore]
         public virtual UserActivities? UserActivities { get; set; }
-        public List<PlasticItem>? PlasticItems { get; set;}
+        
     }
 }

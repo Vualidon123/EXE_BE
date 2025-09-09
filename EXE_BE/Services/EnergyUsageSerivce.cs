@@ -13,7 +13,8 @@ namespace EXE_BE.Services
         }
         public async Task<EnergyUsage> AddEnergyUsageAsync(EnergyUsage energyUsage)
         {
-          return  await _energyUsageRepository.AddEnergyUsageAsync(energyUsage);
+            energyUsage.CO2emission= energyUsage.electricityconsumption * 0.6766f ; // Example calculation
+            return  await _energyUsageRepository.AddEnergyUsageAsync(energyUsage);
         }
         public async Task<EnergyUsage?> GetEnergyUsageByIdAsync(int id)
         {
@@ -21,7 +22,8 @@ namespace EXE_BE.Services
         }
         public async Task UpdateEnergyUsageAsync(EnergyUsage energyUsage)
         {
-             await _energyUsageRepository.UpdateEnergyUsageAsync(energyUsage);
+            energyUsage.CO2emission = energyUsage.electricityconsumption * 0.6766f;
+            await _energyUsageRepository.UpdateEnergyUsageAsync(energyUsage);
         }
         public async Task DeleteEnergyUsageAsync(int id)
         {
@@ -30,6 +32,10 @@ namespace EXE_BE.Services
         public async Task<List<EnergyUsage>> GetEnergyUsageByUserId(int userId)
         {
             return await _energyUsageRepository.GetEnergyUsageByUserId(userId);
+        }
+        public async Task<List<EnergyUsage>> GetEnergyUsages()
+        {
+            return await _energyUsageRepository.GetEnergyUsages();
         }
     }
 

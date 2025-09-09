@@ -12,8 +12,7 @@ namespace EXE_BE.Data.Repository
         }
         public async Task<EnergyUsage> AddEnergyUsageAsync(EnergyUsage energyUsage)
         {
-            energyUsage.CO2emission = energyUsage.electricityconsumption * 0.6766f;
-            _context.EnergyUsages.Add(energyUsage);
+            
             await _context.SaveChangesAsync();
             return energyUsage;
         }
@@ -39,6 +38,12 @@ namespace EXE_BE.Data.Repository
         {
             return await _context.EnergyUsages.
                 Where(x => x.UserActivities.UserId == userId).
+                ToListAsync();
+        }
+        public async Task<List<EnergyUsage>> GetEnergyUsages()
+        {
+            return await _context.EnergyUsages.
+                
                 ToListAsync();
         }
     }
