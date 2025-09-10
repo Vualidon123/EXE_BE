@@ -20,24 +20,24 @@ namespace EXE_BE.Services
             _configuration = configuration;
         }
 
-        public async Task<ServiceResponse<User>> RegisterAsync(string username, string email, string password, string? phoneNumber)
+        public async Task<ServiceResponse<Auth>> RegisterAsync(string username, string email, string password, string? phoneNumber)
         {
             // Validate inputs
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                return ServiceResponse<User>.FailureResponse("Username, email, and password are required");
+                return ServiceResponse<Auth>.FailureResponse("Username, email, and password are required");
             }
 
             // Check if email already exists
             if (await _userRepository.EmailExistsAsync(email))
             {
-                return ServiceResponse<User>.FailureResponse("Email already in use");
+                return ServiceResponse<Auth>.FailureResponse("Email already in use");
             }
 
             // Check if username already exists
             if (await _userRepository.UsernameExistsAsync(username))
             {
-                return ServiceResponse<User>.FailureResponse("Username already in use");
+                return ServiceResponse<Auth>.FailureResponse("Username already in use");
             }
 
             // Create new user
@@ -46,13 +46,25 @@ namespace EXE_BE.Services
                 UserName = username,
                 Email = email,
                 PasswordHash = HashPassword(password),
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Role = user_role.User,
+                SubscriptionType = subscription_type.Free,
             };
 
             // Save user to database
             await _userRepository.CreateAsync(user);
+         
+            // Generate JWT token
+            var token = GenerateJwtToken(user);
 
-            return ServiceResponse<User>.SuccessResponse(user, "Registration successful");
+            // Create Auth object
+            var auth = new Auth
+            {
+                User = user,
+                Token = token
+            };
+
+            return ServiceResponse<Auth>.SuccessResponse(auth, "Registration successful");
         }
 
         public async Task<ServiceResponse<Auth>> LoginAsync(string email, string password)
@@ -106,6 +118,7 @@ namespace EXE_BE.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Role, Enum.GetName(typeof(user_role), user.Role)),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Name, user.UserName)
             };
