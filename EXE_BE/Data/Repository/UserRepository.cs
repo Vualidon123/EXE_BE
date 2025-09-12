@@ -44,5 +44,10 @@ namespace EXE_BE.Data.Repository
         {
             return await _context.Users.AnyAsync(u => u.UserName == username);
         }
+
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
     }
 }

@@ -47,7 +47,10 @@ namespace EXE_BE.Services
                 userActivities.EnergyUsage.ActivityId = createdActivity.Id;
                 await _energyUsageRepository.UpdateEnergyUsageAsync(userActivities.EnergyUsage);
             }
-
+            userActivities.TotalCO2Emission= (userActivities.PlasticUsage?.CO2emission ?? 0) +
+                                             (userActivities.FoodUsage?.CO2emission ?? 0) +
+                                             (userActivities.TrafficUsage?.CO2emission ?? 0) +
+                                             (userActivities.EnergyUsage?.CO2emission ?? 0);
             return createdActivity;
         }
         public async Task<UserActivities?> GetUserActivitiesByIdAsync(int id)
@@ -65,6 +68,11 @@ namespace EXE_BE.Services
         public async Task DeleteUserActivitiesAsync(int id)
         {
             await _userActivitiesRepository.DeleteUserActivitiesAsync(id);
+        }
+
+        public async Task<List<User>> LeaderBoard()
+        {
+            return await _userActivitiesRepository.GetLeaderboardByCO2Emission();
         }
     }   
 

@@ -91,5 +91,12 @@ namespace EXE_BE.Controllers
             await _userActivitiesService.DeleteUserActivitiesAsync(id);
             return Ok();
         }
+        [HttpGet("LeaderBoard")]
+        public async Task<IActionResult> GetLeaderBoard()
+        {
+            var activities = await _userActivitiesService.GetAcitvicties();
+
+            return Ok(activities);
+        }
     }
 }
