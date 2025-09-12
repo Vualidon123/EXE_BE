@@ -59,6 +59,13 @@ namespace EXE_BE.Data.Repository
                 Include(c => c.EnergyUsage).
                 ToListAsync();
         }
+        public async Task<List<User>> GetLeaderboardByCO2Emission()
+        {
+           
+            return await _context.Users
+                .OrderBy(u => u.UserActivities.Sum(a => a.TotalCO2Emission))//acsending order, lower CO2 is better
+                .ToListAsync();
+        }
     }
 
 }
