@@ -3,6 +3,7 @@ using System;
 using EXE_BE.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EXE_BE.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250909145938_UpdateUser")]
+    partial class UpdateUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,72 +24,6 @@ namespace EXE_BE.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("EXE_BE.Models.Challenge", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("isComplete")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Challenges");
-                });
-
-            modelBuilder.Entity("EXE_BE.Models.ChallengeProgress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChallengeId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("FinishDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<float>("Progress")
-                        .HasColumnType("real");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("isComplete")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChallengeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ChallengeProgresses");
-                });
 
             modelBuilder.Entity("EXE_BE.Models.EnergyUsage", b =>
                 {
@@ -321,25 +258,6 @@ namespace EXE_BE.Migrations
                     b.ToTable("UserActivities");
                 });
 
-            modelBuilder.Entity("EXE_BE.Models.ChallengeProgress", b =>
-                {
-                    b.HasOne("EXE_BE.Models.Challenge", "Challenge")
-                        .WithMany()
-                        .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EXE_BE.Models.User", "User")
-                        .WithMany("ChallengeProgresses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Challenge");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("EXE_BE.Models.ItemList.FoodItem", b =>
                 {
                     b.HasOne("EXE_BE.Models.FoodUsage", null)
@@ -427,8 +345,6 @@ namespace EXE_BE.Migrations
 
             modelBuilder.Entity("EXE_BE.Models.User", b =>
                 {
-                    b.Navigation("ChallengeProgresses");
-
                     b.Navigation("UserActivities");
                 });
 #pragma warning restore 612, 618

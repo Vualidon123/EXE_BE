@@ -32,17 +32,7 @@ namespace EXE_BE.Controllers
                 return BadRequest(new { Message = result.Message });
             }
 
-            return Ok(new 
-            { 
-                Message = result.Message,
-                User = new
-                {
-                    result.Data!.Id,
-                    result.Data.UserName,
-                    result.Data.Email,
-                    result.Data.PhoneNumber
-                }
-            });
+            return Ok(result);
         }
 
         [HttpPost("login")]
@@ -52,21 +42,10 @@ namespace EXE_BE.Controllers
 
             if (!result.Success)
             {
-                return BadRequest(new { Message = result.Message });
+                return BadRequest(new { result.Message });
             }
 
-            return Ok(new
-            {
-                Message = result.Message,
-                Token = result.Data!.Token,
-                User = new
-                {
-                    result.Data.User.Id,
-                    result.Data.User.UserName,
-                    result.Data.User.Email,
-                    result.Data.User.PhoneNumber
-                }
-            });
+            return Ok(result);
         }
 
         [Authorize]

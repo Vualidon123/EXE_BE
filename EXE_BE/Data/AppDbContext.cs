@@ -13,6 +13,8 @@ namespace EXE_BE.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<UserActivities> UserActivities { get; set; }
+        public DbSet<Challenge> Challenges { get; set; }
+        public DbSet<ChallengeProgress> ChallengeProgresses { get; set; }
         public DbSet<EnergyUsage> EnergyUsages { get; set; }
         public DbSet<FoodUsage> FoodUsages { get; set; }
         public DbSet<PlasticUsage> PlasticUsages { get; set; }
@@ -27,11 +29,16 @@ namespace EXE_BE.Data
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Id)
                 .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.UserActivities)
+                .WithOne(ua => ua.User)
+                .HasForeignKey(ua => ua.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<UserActivities>()
-             .HasOne(ua => ua.EnergyUsage)
-             .WithOne(eu => eu.UserActivities)
-             .HasForeignKey<UserActivities>(ua => ua.EnergyUsageId)
-             .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(ua => ua.EnergyUsage)
+                .WithOne(eu => eu.UserActivities)
+                .HasForeignKey<UserActivities>(ua => ua.EnergyUsageId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserActivities>()
                 .HasOne(ua => ua.FoodUsage)
@@ -50,6 +57,7 @@ namespace EXE_BE.Data
                 .WithOne(tu => tu.UserActivities)
                 .HasForeignKey<UserActivities>(ua => ua.TrafficUsageId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
 
             // ------------------ One-to-Many Relations ------------------
 
@@ -58,20 +66,25 @@ namespace EXE_BE.Data
                 .HasOne<FoodUsage>()
                 .WithMany(fu => fu.FoodItems)
                 .HasForeignKey(fi => fi.FoodUsageId)
-                .OnDelete(DeleteBehavior.Cascade);
-
+                .OnDelete(DeleteBehavior.SetNull);                
             // PlasticUsage → PlasticItems
             modelBuilder.Entity<PlasticItem>()
                 .HasOne<PlasticUsage>()
                 .WithMany(pu => pu.PlasticItems)
                 .HasForeignKey(pi => pi.PlasticUsageId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-
+            modelBuilder.Entity<ChallengeProgress>()
+                .HasOne(cp => cp.Challenge)
+                .WithMany()
+                .HasForeignKey(cp => cp.ChallengeId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ChallengeProgress>()
+                .HasOne(cp => cp.User)
+                .WithMany(u => u.ChallengeProgresses)
+                .HasForeignKey(cp => cp.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
-
-
         }
     }
 }
