@@ -51,6 +51,7 @@ namespace EXE_BE.Services
                                              (userActivities.FoodUsage?.CO2emission ?? 0) +
                                              (userActivities.TrafficUsage?.CO2emission ?? 0) +
                                              (userActivities.EnergyUsage?.CO2emission ?? 0);
+            await _userActivitiesRepository.UpdateUserActivitiesAsync(userActivities);
             return createdActivity;
         }
         public async Task<UserActivities?> GetUserActivitiesByIdAsync(int id)

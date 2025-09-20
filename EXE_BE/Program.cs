@@ -20,6 +20,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
 
+builder.Services.AddScoped<ChallengeProgressRepository>();
+builder.Services.AddScoped<ChallengeProgressService>();
+
+builder.Services.AddScoped<ChallengeRepository>();
+builder.Services.AddScoped<ChallengeService>();
+
 builder.Services.AddScoped<FoodUsageService>();
 builder.Services.AddScoped<FoodUsageRepository>();
 

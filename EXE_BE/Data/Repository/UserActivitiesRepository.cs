@@ -61,11 +61,16 @@ namespace EXE_BE.Data.Repository
         }
         public async Task<List<User>> GetLeaderboardByCO2Emission()
         {
-           
+            var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
+
             return await _context.Users
-                .OrderBy(u => u.UserActivities.Sum(a => a.TotalCO2Emission))//acsending order, lower CO2 is better
+                .OrderBy(u => u.UserActivities
+                    .Where(a => a.Date >= sevenDaysAgo)
+                    .Sum(a => a.TotalCO2Emission))
                 .ToListAsync();
         }
+
+
     }
 
 }
