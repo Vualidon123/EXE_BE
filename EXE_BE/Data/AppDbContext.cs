@@ -21,6 +21,8 @@ namespace EXE_BE.Data
         public DbSet<TrafficUsage> TrafficUsages { get; set; }
         public DbSet<FoodItem> FoodItems { get; set; }
         public DbSet<PlasticItem> PlasticItems { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -82,6 +84,12 @@ namespace EXE_BE.Data
                 .HasOne(cp => cp.User)
                 .WithMany(u => u.ChallengeProgresses)
                 .HasForeignKey(cp => cp.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.User)
+                .WithMany()
+                .HasForeignKey(t => t.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);

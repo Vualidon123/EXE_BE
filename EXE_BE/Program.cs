@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Net.payOS;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 
 // Register PostgreSQL DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -44,6 +46,15 @@ builder.Services.AddScoped<TrafficUsageSerivce>();
 
 builder.Services.AddScoped<UserActivitiesSerivce>();
 builder.Services.AddScoped<UserActivitiesRepository>();
+
+builder.Services.AddScoped<TransactionRepository>();
+builder.Services.AddScoped<TransactionService>();
+
+builder.Services.AddScoped<PayOS>(payOs =>
+{
+   var config = payOs.GetRequiredService<IConfiguration>();
+    return new PayOS(config["PayOS:ClientId"], config["PayOS:ApiKey"], config["PayOs:ChecksumKey"]);
+});
 
 // Configure JWT authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

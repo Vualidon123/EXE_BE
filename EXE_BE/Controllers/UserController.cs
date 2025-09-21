@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using EXE_BE.Controllers.ViewModel;
 using EXE_BE.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using EXE_BE.Controllers.ViewModel;
 
 namespace EXE_BE.Controllers
 {
@@ -22,8 +24,8 @@ namespace EXE_BE.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             var result = await _userService.RegisterAsync(
-                request.Username, 
-                request.Email, 
+                request.Username,
+                request.Email,
                 request.Password,
                 request.PhoneNumber);
 
@@ -54,5 +56,18 @@ namespace EXE_BE.Controllers
         {
             return Ok(new { Message = "Authenticated user", Username = User.Identity?.Name });
         }
+
+        [Authorize]
+        [HttpPost("upgrade")]
+        public async Task<IActionResult> UpgradeAccount([FromBody] UpgradeRequest request)
+        {
+            request.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+            var result = await _userService.UpgradeAccount(request);
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
     }
 }

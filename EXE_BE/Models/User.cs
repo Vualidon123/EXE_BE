@@ -27,7 +27,7 @@
     public enum subscription_type
     {
         Free=1,
-        Vip=2
-        
+        Vip_25=2,
+        Vip_50=3
     }
 }

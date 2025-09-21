@@ -1,7 +1,9 @@
-﻿using EXE_BE.Data.Repository;
+﻿using EXE_BE.Controllers.ViewModel;
+using EXE_BE.Data.Repository;
 using EXE_BE.Models;
 using EXE_BE.Services.Models;
 using Microsoft.IdentityModel.Tokens;
+using Net.payOS.Types;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -12,12 +14,16 @@ namespace EXE_BE.Services
     public class UserService
     {
         private readonly UserRepository _userRepository;
+        private readonly TransactionService _transactionService;
+        private readonly TransactionRepository _transactionRepository;
         private readonly IConfiguration _configuration;
 
-        public UserService(UserRepository userRepository, IConfiguration configuration)
+        public UserService(UserRepository userRepository, IConfiguration configuration, TransactionService transactionService, TransactionRepository transactionRepository)
         {
             _userRepository = userRepository;
             _configuration = configuration;
+            _transactionService = transactionService;
+            _transactionRepository = transactionRepository;
         }
 
         public async Task<ServiceResponse<Auth>> RegisterAsync(string username, string email, string password, string? phoneNumber)
@@ -53,7 +59,7 @@ namespace EXE_BE.Services
 
             // Save user to database
             await _userRepository.CreateAsync(user);
-         
+
             // Generate JWT token
             var token = GenerateJwtToken(user);
 
@@ -116,10 +122,9 @@ namespace EXE_BE.Services
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(ClaimTypes.Role, Enum.GetName(typeof(user_role), user.Role)),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Name, user.UserName)
             };
 
@@ -131,6 +136,53 @@ namespace EXE_BE.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public async Task<ServiceResponse<CreatePaymentResult>> UpgradeAccount(UpgradeRequest request)
+        {
+            // Build PayOS request payload
+            var plan = request.Plan switch
+            {
+                UpgradePlan.Vip_25 => "Gói 25",
+                UpgradePlan.Vip_50 => "Gói 50",
+                _ => throw new ArgumentException($"Unsupported plan type: {request.Plan}")
+            };
+            var amount = request.Plan switch
+            {
+                UpgradePlan.Vip_25 => 25000,
+                UpgradePlan.Vip_50 => 50000,
+                _ => throw new ArgumentException($"Unsupported plan type: {request.Plan}")
+            };
+
+            var transaction = await _transactionRepository.AddTransactionAsync(new EXE_BE.Models.Transaction
+            {
+                UserId = request.UserId,
+                Amount = amount,
+                Status = TransactionStatus.Pending,
+                Reason = $"Nâng cấp {plan}"
+            });
+
+            var paymentData = new PaymentData(
+                orderCode: transaction.Id,
+                amount: amount,
+                description: $"Nâng cấp {plan}",
+                items: new List<ItemData>() {
+                        new ItemData(plan, 1, amount)
+                },
+                cancelUrl: request.cancelUrl,
+                returnUrl: request.returnUrl
+                );
+
+            var res = await _transactionService.GeneratePayOSPaymentUrlAsync(paymentData);
+
+            if (res.Success && res.Data != null)
+            {
+                return ServiceResponse<CreatePaymentResult>.SuccessResponse(res.Data, "Payment URL generated successfully");
+            }
+            else
+            {
+                return ServiceResponse<CreatePaymentResult>.FailureResponse(res.Message ?? "Failed to generate payment URL");
+            }
         }
     }
 }
