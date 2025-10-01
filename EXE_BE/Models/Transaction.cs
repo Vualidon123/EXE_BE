@@ -6,7 +6,9 @@
         public int UserId { get; set; }
         public TransactionStatus Status { get; set; }
         public long Amount { get; set; }
-        public string Reason { get; set; }
+        public string Reason { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
 
         public virtual User User { get; set; }
     }

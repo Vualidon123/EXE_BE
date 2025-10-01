@@ -33,6 +33,167 @@ namespace EXE_BE.Services
             _userRepository = userRepository;
         }
 
+        // CRUD Operations
+        public async Task<ServiceResponse<TransactionResponse>> CreateTransactionAsync(CreateTransactionRequest request)
+        {
+            try
+            {
+                // Validate user exists
+                var user = await _userRepository.GetByIdAsync(request.UserId);
+                if (user == null)
+                {
+                    return ServiceResponse<TransactionResponse>.FailureResponse("User not found");
+                }
+
+                var transaction = new EXE_BE.Models.Transaction
+                {
+                    UserId = request.UserId,
+                    Amount = request.Amount,
+                    Reason = request.Reason,
+                    Status = request.Status
+                };
+
+                var createdTransaction = await _transactionRepository.AddTransactionAsync(transaction);
+                
+                // Get the transaction with user details
+                var transactionWithUser = await _transactionRepository.GetTransactionByIdAsync(createdTransaction.Id);
+                
+                var response = MapToTransactionResponse(transactionWithUser!);
+                
+                return ServiceResponse<TransactionResponse>.SuccessResponse(response, "Transaction created successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating transaction");
+                return ServiceResponse<TransactionResponse>.FailureResponse("An error occurred while creating the transaction");
+            }
+        }
+
+        public async Task<ServiceResponse<TransactionResponse>> GetTransactionByIdAsync(int id)
+        {
+            try
+            {
+                var transaction = await _transactionRepository.GetTransactionByIdAsync(id);
+                if (transaction == null)
+                {
+                    return ServiceResponse<TransactionResponse>.FailureResponse("Transaction not found");
+                }
+
+                var response = MapToTransactionResponse(transaction);
+                return ServiceResponse<TransactionResponse>.SuccessResponse(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving transaction");
+                return ServiceResponse<TransactionResponse>.FailureResponse("An error occurred while retrieving the transaction");
+            }
+        }
+
+        public async Task<ServiceResponse<PagedResponse<TransactionResponse>>> GetAllTransactionsAsync(TransactionFilterRequest filter)
+        {
+            try
+            {
+                var (transactions, totalCount) = await _transactionRepository.GetFilteredTransactionsAsync(filter);
+                
+                var transactionResponses = transactions.Select(MapToTransactionResponse).ToList();
+                
+                var pagedResponse = new PagedResponse<TransactionResponse>(
+                    transactionResponses, 
+                    filter.Page, 
+                    filter.PageSize, 
+                    totalCount);
+
+                return ServiceResponse<PagedResponse<TransactionResponse>>.SuccessResponse(pagedResponse);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving transactions");
+                return ServiceResponse<PagedResponse<TransactionResponse>>.FailureResponse("An error occurred while retrieving transactions");
+            }
+        }
+
+        public async Task<ServiceResponse<List<TransactionResponse>>> GetTransactionsByUserIdAsync(int userId)
+        {
+            try
+            {
+                var transactions = await _transactionRepository.GetTransactionsByUserIdAsync(userId);
+                var response = transactions.Select(MapToTransactionResponse).ToList();
+                
+                return ServiceResponse<List<TransactionResponse>>.SuccessResponse(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving user transactions");
+                return ServiceResponse<List<TransactionResponse>>.FailureResponse("An error occurred while retrieving user transactions");
+            }
+        }
+
+        public async Task<ServiceResponse<TransactionResponse>> UpdateTransactionAsync(int id, UpdateTransactionRequest request)
+        {
+            try
+            {
+                var transaction = await _transactionRepository.GetTransactionByIdAsync(id);
+                if (transaction == null)
+                {
+                    return ServiceResponse<TransactionResponse>.FailureResponse("Transaction not found");
+                }
+
+                // Update only provided fields
+                if (request.Status.HasValue)
+                    transaction.Status = request.Status.Value;
+
+                if (!string.IsNullOrEmpty(request.Reason))
+                    transaction.Reason = request.Reason;
+
+                await _transactionRepository.UpdateTransactionAsync(transaction);
+
+                var response = MapToTransactionResponse(transaction);
+                return ServiceResponse<TransactionResponse>.SuccessResponse(response, "Transaction updated successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating transaction");
+                return ServiceResponse<TransactionResponse>.FailureResponse("An error occurred while updating the transaction");
+            }
+        }
+
+        public async Task<ServiceResponse<bool>> DeleteTransactionAsync(int id)
+        {
+            try
+            {
+                var transaction = await _transactionRepository.GetTransactionByIdAsync(id);
+                if (transaction == null)
+                {
+                    return ServiceResponse<bool>.FailureResponse("Transaction not found");
+                }
+
+                await _transactionRepository.DeleteTransactionAsync(id);
+                return ServiceResponse<bool>.SuccessResponse(true, "Transaction deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting transaction");
+                return ServiceResponse<bool>.FailureResponse("An error occurred while deleting the transaction");
+            }
+        }
+
+        // Helper method to map Transaction to TransactionResponse
+        private TransactionResponse MapToTransactionResponse(EXE_BE.Models.Transaction transaction)
+        {
+            return new TransactionResponse
+            {
+                Id = transaction.Id,
+                UserId = transaction.UserId,
+                UserName = transaction.User?.UserName ?? "Unknown",
+                Status = transaction.Status,
+                Amount = transaction.Amount,
+                Reason = transaction.Reason,
+                CreatedAt = transaction.CreatedAt,
+                UpdatedAt = transaction.UpdatedAt
+            };
+        }
+
+        // PayOS Related Methods
         public async Task<ServiceResponse<CreatePaymentResult>> GeneratePayOSPaymentUrlAsync(PaymentData data)
         {
             try
