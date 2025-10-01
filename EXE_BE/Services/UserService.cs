@@ -184,5 +184,133 @@ namespace EXE_BE.Services
                 return ServiceResponse<CreatePaymentResult>.FailureResponse(res.Message ?? "Failed to generate payment URL");
             }
         }
+
+        public async Task<ServiceResponse<UserResponseDto>> GetUserByIdAsync(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                return ServiceResponse<UserResponseDto>.FailureResponse("User not found");
+            }
+
+            var userDto = UserResponseDto.FromUser(user);
+            return ServiceResponse<UserResponseDto>.SuccessResponse(userDto, "User retrieved successfully");
+        }
+
+        public async Task<ServiceResponse<List<UserResponseDto>>> GetAllUsersAsync()
+        {
+            var users = await _userRepository.GetAllUsersAsync();
+            var userDtos = users.Select(UserResponseDto.FromUser).ToList();
+            return ServiceResponse<List<UserResponseDto>>.SuccessResponse(userDtos, "Users retrieved successfully");
+        }
+
+        public async Task<ServiceResponse<PagedResponse<UserResponseDto>>> GetUsersPagedAsync(int page = 1, int pageSize = 10)
+        {
+            // Validate pagination parameters
+            if (page < 1) page = 1;
+            if (pageSize < 1 || pageSize > 100) pageSize = 10;
+
+            var users = await _userRepository.GetUsersPagedAsync(page, pageSize);
+            var totalCount = await _userRepository.GetUserCountAsync();
+            
+            var userDtos = users.Select(UserResponseDto.FromUser).ToList();
+            var pagedResponse = new PagedResponse<UserResponseDto>(userDtos, page, pageSize, totalCount);
+            
+            return ServiceResponse<PagedResponse<UserResponseDto>>.SuccessResponse(pagedResponse, "Users retrieved successfully");
+        }
+
+        public async Task<ServiceResponse<UserResponseDto>> UpdateUserAsync(int id, UpdateUserRequest request)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                return ServiceResponse<UserResponseDto>.FailureResponse("User not found");
+            }
+
+            // Update only provided fields
+            if (!string.IsNullOrEmpty(request.UserName))
+            {
+                // Check if new username is already taken (excluding current user)
+                var existingUser = await _userRepository.GetByUsernameAsync(request.UserName);
+                if (existingUser != null && existingUser.Id != id)
+                {
+                    return ServiceResponse<UserResponseDto>.FailureResponse("Username already in use");
+                }
+                user.UserName = request.UserName;
+            }
+
+            if (!string.IsNullOrEmpty(request.PhoneNumber))
+            {
+                user.PhoneNumber = request.PhoneNumber;
+            }
+
+            if (request.DateOfBirth.HasValue)
+            {
+                user.DateOfBirth = request.DateOfBirth.Value;
+            }
+
+            await _userRepository.UpdateUserAsync(user);
+            var userDto = UserResponseDto.FromUser(user);
+            return ServiceResponse<UserResponseDto>.SuccessResponse(userDto, "User updated successfully");
+        }
+
+        public async Task<ServiceResponse<bool>> DeleteUserAsync(int id)
+        {
+            if (!await _userRepository.UserExistsAsync(id))
+            {
+                return ServiceResponse<bool>.FailureResponse("User not found");
+            }
+
+            var result = await _userRepository.DeleteUserAsync(id);
+            if (result)
+            {
+                return ServiceResponse<bool>.SuccessResponse(true, "User deleted successfully");
+            }
+
+            return ServiceResponse<bool>.FailureResponse("Failed to delete user");
+        }
+
+        public async Task<ServiceResponse<UserResponseDto>> ChangePasswordAsync(int id, string currentPassword, string newPassword)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                return ServiceResponse<UserResponseDto>.FailureResponse("User not found");
+            }
+
+            // Verify current password
+            if (!VerifyPassword(currentPassword, user.PasswordHash))
+            {
+                return ServiceResponse<UserResponseDto>.FailureResponse("Current password is incorrect");
+            }
+
+            // Validate new password
+            if (string.IsNullOrEmpty(newPassword) || newPassword.Length < 6)
+            {
+                return ServiceResponse<UserResponseDto>.FailureResponse("New password must be at least 6 characters long");
+            }
+
+            // Update password
+            user.PasswordHash = HashPassword(newPassword);
+            await _userRepository.UpdateUserAsync(user);
+
+            var userDto = UserResponseDto.FromUser(user);
+            return ServiceResponse<UserResponseDto>.SuccessResponse(userDto, "Password changed successfully");
+        }
+
+        public async Task<ServiceResponse<UserResponseDto>> UpdateUserRoleAsync(int id, user_role newRole)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                return ServiceResponse<UserResponseDto>.FailureResponse("User not found");
+            }
+
+            user.Role = newRole;
+            await _userRepository.UpdateUserAsync(user);
+
+            var userDto = UserResponseDto.FromUser(user);
+            return ServiceResponse<UserResponseDto>.SuccessResponse(userDto, "User role updated successfully");
+        }
     }
 }

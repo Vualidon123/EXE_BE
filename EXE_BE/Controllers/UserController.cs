@@ -52,9 +52,100 @@ namespace EXE_BE.Controllers
 
         [Authorize]
         [HttpGet("me")]
-        public IActionResult GetCurrentUser()
+        public async Task<IActionResult> GetCurrentUser()
         {
-            return Ok(new { Message = "Authenticated user", Username = User.Identity?.Name });
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var result = await _userService.GetUserByIdAsync(userId);
+            
+            if (!result.Success)
+            {
+                return NotFound(new { Message = result.Message });
+            }
+
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Admin, Staff")]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var result = await _userService.GetUserByIdAsync(id);
+            
+            if (!result.Success)
+            {
+                return NotFound(new { Message = result.Message });
+            }
+
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Admin, Staff")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var result = await _userService.GetUsersPagedAsync(page, pageSize);
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserRequest request)
+        {
+            // Users can only update their own profile unless they're admin
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            
+            if (currentUserId != id && userRole != "Admin")
+            {
+                return Forbid("You can only update your own profile");
+            }
+
+            var result = await _userService.UpdateUserAsync(id, request);
+            
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            // Only admins can delete users, or users can delete their own account
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            
+            if (currentUserId != id && userRole != "Admin")
+            {
+                return Forbid();
+            }
+
+            var result = await _userService.DeleteUserAsync(id);
+            
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var result = await _userService.ChangePasswordAsync(userId, request.CurrentPassword, request.NewPassword);
+            
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(result);
         }
 
         [Authorize]
@@ -67,6 +158,20 @@ namespace EXE_BE.Controllers
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}/role")]
+        public async Task<IActionResult> UpdateUserRole(int id, [FromBody] UpdateUserRoleRequest request)
+        {
+            var result = await _userService.UpdateUserRoleAsync(id, request.Role);
+            
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(result);
         }
 
     }

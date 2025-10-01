@@ -50,10 +50,39 @@ namespace EXE_BE.Data.Repository
             return await _context.Users.ToListAsync();
         }
 
+        public async Task<List<User>> GetUsersPagedAsync(int page, int pageSize)
+        {
+            return await _context.Users
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetUserCountAsync()
+        {
+            return await _context.Users.CountAsync();
+        }
+
         public async Task UpdateUserAsync(User user)
         {
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            var user = await GetByIdAsync(id);
+            if (user == null)
+                return false;
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UserExistsAsync(int id)
+        {
+            return await _context.Users.AnyAsync(u => u.Id == id);
         }
     }
 }
