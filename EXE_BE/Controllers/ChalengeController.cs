@@ -1,4 +1,6 @@
-﻿using EXE_BE.Services;
+﻿using EXE_BE.Controllers.ViewModel;
+using EXE_BE.Models;
+using EXE_BE.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,10 +8,10 @@ namespace EXE_BE.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Challenge : ControllerBase
+    public class ChalengeController : ControllerBase
     {
         private readonly ChallengeService _challengeService;
-        public Challenge(ChallengeService challengeService)
+        public ChalengeController(ChallengeService challengeService)
         {
             _challengeService = challengeService;
         }
@@ -30,8 +32,16 @@ namespace EXE_BE.Controllers
             return Ok(challenge);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateChallenge([FromBody] Models.Challenge challenge)
+        public async Task<IActionResult> CreateChallenge([FromBody] ChalengeRequest challengeRequest)
         {
+            var challenge = new Challenge
+            {
+                Name = challengeRequest.Name,
+                Description = challengeRequest.Description,
+                StartDate = challengeRequest.StartDate,
+                isComplete = false,
+                EndDate = null
+            };
             await _challengeService.CreateChallengeAsync(challenge);
             return CreatedAtAction(nameof(GetChallengeById), new { id = challenge.Id }, challenge);
         }

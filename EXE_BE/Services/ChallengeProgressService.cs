@@ -22,6 +22,14 @@ namespace EXE_BE.Services
         {
             await _challengeProgressRepository.CreateChallengeProgressAsync(challengeProgress);
         }
-         
+        public async Task UpdateChallengeProgressAsync(ChallengeProgress challengeProgress)
+        {
+            await _challengeProgressRepository.UpdateChallengeProgressAsync(challengeProgress);
+        }
+        public async Task DeleteChallengeProgressAsync(int id)
+        {
+            await _challengeProgressRepository.DeleteChallengeProgressAsync(id);
+        }
+
     }
 }

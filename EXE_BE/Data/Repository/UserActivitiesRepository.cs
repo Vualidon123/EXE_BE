@@ -34,7 +34,8 @@ namespace EXE_BE.Data.Repository
         }
         public async Task<UserActivities?> GetUserActivitiesByIdAsync(int id)
         {
-            return await _context.UserActivities.FindAsync(id);
+            return await _context.UserActivities.
+                FirstOrDefaultAsync(u => u.Id == id);
         }
         public async Task UpdateUserActivitiesAsync(UserActivities userActivities)
         {
@@ -50,13 +51,14 @@ namespace EXE_BE.Data.Repository
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task<List<UserActivities>> GetAllUserActivitiesAsync()
+        public async Task<List<UserActivities>> GetUserActivitiesByUserIdAsync(int userId)
         {
             return await _context.UserActivities.
                 Include(c => c.PlasticUsage).
                 Include(c => c.TrafficUsage).
                 Include(c => c.FoodUsage).
                 Include(c => c.EnergyUsage).
+                Where(u => u.UserId == userId).
                 ToListAsync();
         }
         public async Task<List<User>> GetLeaderboardByCO2Emission()
@@ -67,6 +69,7 @@ namespace EXE_BE.Data.Repository
                 .OrderBy(u => u.UserActivities
                     .Where(a => a.Date >= sevenDaysAgo)
                     .Sum(a => a.TotalCO2Emission))
+                .Include(u => u.UserActivities.Where(a => a.Date >= sevenDaysAgo))
                 .ToListAsync();
         }
 

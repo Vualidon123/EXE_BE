@@ -50,6 +50,7 @@ builder.Services.AddScoped<UserActivitiesRepository>();
 builder.Services.AddScoped<TransactionRepository>();
 builder.Services.AddScoped<TransactionService>();
 
+builder.Services.AddScoped<RecommendService>();
 builder.Services.AddScoped<PayOS>(payOs =>
 {
    var config = payOs.GetRequiredService<IConfiguration>();

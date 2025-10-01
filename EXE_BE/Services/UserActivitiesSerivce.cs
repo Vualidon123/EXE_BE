@@ -1,5 +1,7 @@
-﻿using EXE_BE.Data.Repository;
+﻿using EXE_BE.Controllers.ViewModel;
+using EXE_BE.Data.Repository;
 using EXE_BE.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EXE_BE.Services
 {
@@ -58,9 +60,9 @@ namespace EXE_BE.Services
         {
             return await _userActivitiesRepository.GetUserActivitiesByIdAsync(id);
         }
-       public async Task<List<UserActivities>> GetAcitvicties()
+       public async Task<List<UserActivities>> GetUserActivitiesByUserIdAsync(int userId)
        { 
-            return await _userActivitiesRepository.GetAllUserActivitiesAsync(); 
+            return await _userActivitiesRepository.GetUserActivitiesByUserIdAsync(userId); 
        }
        public async Task UpdateUserActivitiesAsync(UserActivities userActivities)
         {
@@ -71,9 +73,20 @@ namespace EXE_BE.Services
             await _userActivitiesRepository.DeleteUserActivitiesAsync(id);
         }
 
-        public async Task<List<User>> LeaderBoard()
+        public async Task<List<UserLeaderboardDto>> LeaderBoard()
         {
-            return await _userActivitiesRepository.GetLeaderboardByCO2Emission();
+            // Get users from repo
+            var users = await _userActivitiesRepository.GetLeaderboardByCO2Emission();
+
+            // Convert to DTOs
+            var leaderboard = users.Select(u => new UserLeaderboardDto
+            {
+                UserName = u.UserName,
+                TotalCO2Emission = u.UserActivities?
+                    .Sum(a => (float?)a.TotalCO2Emission) ?? 0f
+            }).ToList();
+
+            return leaderboard;
         }
     }   
 

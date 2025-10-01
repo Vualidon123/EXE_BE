@@ -1,4 +1,5 @@
-﻿using EXE_BE.Services;
+﻿using EXE_BE.Models;
+using EXE_BE.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +14,14 @@ namespace EXE_BE.Controllers
         {
             _challengeProgressService = challengeProgressService;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllChallengeProgress()
         {
             var progressList = await _challengeProgressService.GetAllChallengeProgressAsync();
             return Ok(progressList);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetChallengeProgressById(int id)
         {
@@ -29,14 +32,16 @@ namespace EXE_BE.Controllers
             }
             return Ok(progress);
         }
+
         [HttpPost]
-        public async Task<IActionResult> CreateChallengeProgress([FromBody] Models.ChallengeProgress progress)
+        public async Task<IActionResult> CreateChallengeProgress([FromBody] ChallengeProgress progress)
         {
             await _challengeProgressService.CreateChallengeProgressAsync(progress);
             return CreatedAtAction(nameof(GetChallengeProgressById), new { id = progress.Id }, progress);
         }
-        /*[HttpPut("{id}")]
-        public async Task<IActionResult> UpdateChallengeProgress(int id, [FromBody] Models.ChallengeProgress progress)
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateChallengeProgress(int id, [FromBody] ChallengeProgress progress)
         {
             if (id != progress.Id)
             {
@@ -45,12 +50,13 @@ namespace EXE_BE.Controllers
             await _challengeProgressService.UpdateChallengeProgressAsync(progress);
             return NoContent();
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteChallengeProgress(int id)
         {
             await _challengeProgressService.DeleteChallengeProgressAsync(id);
             return NoContent();
-        }*/
+        }
     }
 
 }

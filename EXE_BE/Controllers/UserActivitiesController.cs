@@ -36,7 +36,7 @@ namespace EXE_BE.Controllers
                 PlasticUsage = new PlasticUsage
                 {
                     date = DateTime.UtcNow,
-                    CO2emission=0,
+                    CO2emission = 0,
                     PlasticItems = input.PlasticUsage.PlasticItems.Select(item => new PlasticItem
                     {
                         PlasticCategory = item.PlasticCategory,
@@ -49,7 +49,7 @@ namespace EXE_BE.Controllers
                     distance = input.TrafficUsage.Distance,
                     trafficCategory = input.TrafficUsage.TrafficCategory,
 
-                }, 
+                },
                 FoodUsage = new FoodUsage
                 {
                     date = DateTime.UtcNow,
@@ -80,9 +80,9 @@ namespace EXE_BE.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserActivities()
+        public async Task<IActionResult> GetUserActivities(int userId)
         {
-            var activities = await _userActivitiesService.GetAcitvicties();
+            var activities = await _userActivitiesService.GetUserActivitiesByUserIdAsync(userId);
 
             return Ok(activities);
         }
@@ -95,7 +95,7 @@ namespace EXE_BE.Controllers
         [HttpGet("LeaderBoard")]
         public async Task<IActionResult> GetLeaderBoard()
         {
-            var activities = await _userActivitiesService.GetAcitvicties();
+            var activities = await _userActivitiesService.LeaderBoard();
 
             return Ok(activities);
         }
