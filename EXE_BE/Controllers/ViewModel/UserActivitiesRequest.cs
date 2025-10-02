@@ -4,10 +4,7 @@ using EXE_BE.Models.ItemList;
 namespace EXE_BE.Controllers.ViewModel
 {
     public class UserActivitiesInputModel
-    {
-       
-       
-        
+    {       
         public PlasticUsageInputModel PlasticUsage { get; set; }
         public TrafficUsageInputModel TrafficUsage { get; set; }
         public FoodUsageInputModel FoodUsage { get; set; }

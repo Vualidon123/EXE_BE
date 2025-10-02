@@ -72,7 +72,10 @@ namespace EXE_BE.Services
         {
             await _userActivitiesRepository.DeleteUserActivitiesAsync(id);
         }
-
+        public async Task<List<UserActivities>> GetUserActivitiesAsync()
+        {
+            return await _userActivitiesRepository.GetUserActivitiesAsync();
+        }
         public async Task<List<UserLeaderboardDto>> LeaderBoard()
         {
             // Get users from repo

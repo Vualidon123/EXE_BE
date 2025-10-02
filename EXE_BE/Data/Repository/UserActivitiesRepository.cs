@@ -61,6 +61,18 @@ namespace EXE_BE.Data.Repository
                 Where(u => u.UserId == userId).
                 ToListAsync();
         }
+        public async Task<List<UserActivities>> GetUserActivitiesAsync()
+        {
+            return await _context.UserActivities.
+                Include(c => c.PlasticUsage).
+                Include(c => c.TrafficUsage).
+                Include(c => c.FoodUsage).
+                Include(c => c.EnergyUsage).               
+                ToListAsync();
+        }
+
+
+
         public async Task<List<User>> GetLeaderboardByCO2Emission()
         {
             var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);

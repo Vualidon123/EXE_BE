@@ -32,6 +32,6 @@ namespace EXE_BE.Services
         {
             await _challengeRepository.DeleteChallengeAsync(id);
         }
-       
+        
     }
 }

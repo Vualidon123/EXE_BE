@@ -25,6 +25,16 @@ namespace EXE_BE.Controllers
             _plasticUsage = plasticUsageService;
             _foodUsage = foodUsageService;
         }
+        //[Authorize]
+        [HttpGet]
+        public async Task<List<UserActivitiesDto>> GetAllUserActivities()
+        {
+            var activities = await _userActivitiesService.GetUserActivitiesAsync();
+
+            return activities
+                .Select(a => a.ToDto()) // use the extension method mapper
+                .ToList();
+        }
         [HttpPost]
         public async Task<IActionResult> AddUserActivities([FromBody] UserActivitiesInputModel input)
         {
@@ -79,8 +89,8 @@ namespace EXE_BE.Controllers
             return Ok(new { message = "User activity added successfully" });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetUserActivities(int userId)
+        [HttpGet("UserId")]
+        public async Task<IActionResult> GetUserActivitiesByUserId(int userId)
         {
             var activities = await _userActivitiesService.GetUserActivitiesByUserIdAsync(userId);
 

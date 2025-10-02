@@ -8,10 +8,10 @@ namespace EXE_BE.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ChalengeController : ControllerBase
+    public class ChallengeController : ControllerBase
     {
         private readonly ChallengeService _challengeService;
-        public ChalengeController(ChallengeService challengeService)
+        public ChallengeController(ChallengeService challengeService)
         {
             _challengeService = challengeService;
         }
@@ -40,7 +40,7 @@ namespace EXE_BE.Controllers
                 Description = challengeRequest.Description,
                 StartDate = challengeRequest.StartDate,
                 isComplete = false,
-                EndDate = null
+                EndDate = challengeRequest?.EndDate,
             };
             await _challengeService.CreateChallengeAsync(challenge);
             return CreatedAtAction(nameof(GetChallengeById), new { id = challenge.Id }, challenge);

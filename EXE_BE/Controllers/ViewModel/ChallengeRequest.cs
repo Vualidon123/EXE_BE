@@ -7,5 +7,6 @@ namespace EXE_BE.Controllers.ViewModel
         public string Name { get; set; } = ""; // Name of the challenge
         public string Description { get; set; } = ""; // Description of the challenge
         public DateTime StartDate { get; set; } // Start date of the challenge
+        public DateTime EndDate { get; set; }
     }
 }
