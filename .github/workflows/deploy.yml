@@ -18,7 +18,7 @@ jobs:
                 username: ${{ secrets.USER }}
                 password: ${{ secrets.SSH_PASSWORD }}
                 script: |
-                    cd EXE_BE
+                    cd EXE_BE/EXE_BE
                     git pull
                     dotnet ef database update
                     dotnet publish -c Release -o out
