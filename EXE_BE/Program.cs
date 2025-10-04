@@ -56,7 +56,7 @@ builder.Services.AddScoped<NotifyService>();
 builder.Services.AddScoped<RecommendService>();
 builder.Services.AddScoped<PayOS>(payOs =>
 {
-   var config = payOs.GetRequiredService<IConfiguration>();
+    var config = payOs.GetRequiredService<IConfiguration>();
     return new PayOS(config["PayOS:ClientId"], config["PayOS:ApiKey"], config["PayOs:ChecksumKey"]);
 });
 
@@ -114,17 +114,17 @@ builder.Services.AddSwaggerGen(o =>
     o.AddSecurityRequirement(
         new OpenApiSecurityRequirement
         {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
                     }
+                },
+                Array.Empty<string>()
+            }
         }
     );
 });
@@ -145,8 +145,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 //}
 
 app.UseHttpsRedirection();
