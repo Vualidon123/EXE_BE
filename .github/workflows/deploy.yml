@@ -18,6 +18,7 @@ jobs:
                 username: ${{ secrets.USER }}
                 password: ${{ secrets.SSH_PASSWORD }}
                 script: |
+                    echo "${{ secrets.SSH_PASSWORD }}" | sudo -i
                     cd EXE_BE/EXE_BE
                     git pull
                     dotnet ef database update
