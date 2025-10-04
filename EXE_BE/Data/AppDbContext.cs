@@ -22,6 +22,7 @@ namespace EXE_BE.Data
         public DbSet<FoodItem> FoodItems { get; set; }
         public DbSet<PlasticItem> PlasticItems { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Notify> Notifies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

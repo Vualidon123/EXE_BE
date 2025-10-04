@@ -50,6 +50,9 @@ builder.Services.AddScoped<UserActivitiesRepository>();
 builder.Services.AddScoped<TransactionRepository>();
 builder.Services.AddScoped<TransactionService>();
 
+builder.Services.AddScoped<NotifyRepository>();
+builder.Services.AddScoped<NotifyService>();
+
 builder.Services.AddScoped<RecommendService>();
 builder.Services.AddScoped<PayOS>(payOs =>
 {
