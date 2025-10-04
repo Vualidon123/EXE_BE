@@ -42,8 +42,43 @@ namespace EXE_BE.Controllers.ViewModel
     }
     public class EnergyUsageInputModel
     {
-        
         public float ElectricityConsumption { get; set; }
-        
+    }
+    public static class UserActivitiesInputMapper
+    {
+        public static PlasticUsage ToEntity(this PlasticUsageInputModel input) =>
+            input == null ? null : new PlasticUsage
+            {
+                PlasticItems = input.PlasticItems?
+                    .Select(p => new PlasticItem
+                    {
+                        PlasticCategory = p.PlasticCategory,
+                        Weight = p.Weight
+                    }).ToList()
+            };
+
+        public static FoodUsage ToEntity(this FoodUsageInputModel input) =>
+            input == null ? null : new FoodUsage
+            {
+                FoodItems = input.FoodItems?
+                    .Select(f => new FoodItem
+                    {
+                        FoodCategory = f.FoodCategory,
+                        Weight = f.Weight
+                    }).ToList()
+            };
+
+        public static TrafficUsage ToEntity(this TrafficUsageInputModel input) =>
+            input == null ? null : new TrafficUsage
+            {
+                trafficCategory = input.TrafficCategory,
+                distance = input.Distance
+            };
+
+        public static EnergyUsage ToEntity(this EnergyUsageInputModel input) =>
+            input == null ? null : new EnergyUsage
+            {
+                electricityconsumption = input.ElectricityConsumption
+            };
     }
 }

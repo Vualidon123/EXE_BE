@@ -61,7 +61,7 @@ namespace EXE_BE.Data.Repository
 
         public async Task<FoodUsage?> GetFoodUsageByIdAsync(int id)
         {
-            return await _context.FoodUsages.FindAsync(id);
+            return await _context.FoodUsages.FirstOrDefaultAsync(f=>f.Id==id);
         }
         public async Task<List<FoodUsage>> GetFoodUsageByUserId(int userId)
         {

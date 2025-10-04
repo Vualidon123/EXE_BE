@@ -62,6 +62,16 @@ namespace EXE_BE.Data.Repository
             _context.PlasticUsages.Update(plasticUsage);
             await _context.SaveChangesAsync();
         }
+        public async Task DeletePlasticUsageAsync(int id)
+        {
+            var plasticUsage = await _context.PlasticUsages.FindAsync(id);
+            if (plasticUsage != null)
+            {
+                _context.PlasticUsages.Remove(plasticUsage);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
+
 
 }

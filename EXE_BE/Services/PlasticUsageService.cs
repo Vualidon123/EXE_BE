@@ -46,5 +46,9 @@ namespace EXE_BE.Services
             plasticUsage.CO2emission = totalCO2;
             await _plasticUsageRepository.UpdatePlasticUsageAsync(plasticUsage);
         }
+        public async Task DeletePlasticUsageAsync(int id)
+        {
+            await _plasticUsageRepository.DeletePlasticUsageAsync(id);
+        }
     }
 }

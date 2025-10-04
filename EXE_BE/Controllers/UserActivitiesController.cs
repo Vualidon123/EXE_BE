@@ -32,7 +32,7 @@ namespace EXE_BE.Controllers
             var activities = await _userActivitiesService.GetUserActivitiesAsync();
 
             return activities
-                .Select(a => a.ToDto()) // use the extension method mapper
+                .Select(a => a. ToDto()) // use the extension method mapper
                 .ToList();
         }
         [HttpPost]
@@ -109,5 +109,6 @@ namespace EXE_BE.Controllers
 
             return Ok(activities);
         }
+        
     }
 }
