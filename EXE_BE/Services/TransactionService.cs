@@ -89,6 +89,27 @@ namespace EXE_BE.Services
             }
         }
 
+
+        public async Task<ServiceResponse<TransactionResponse>> GetTransactionByIdForUserAsync(int id, int userId = 0)
+        {
+            try
+            {
+                var transaction = await _transactionRepository.GetTransactionByIdForUserAsync(id, userId);
+                if (transaction == null)
+                {
+                    return ServiceResponse<TransactionResponse>.FailureResponse("Transaction not found");
+                }
+
+                var response = MapToTransactionResponse(transaction);
+                return ServiceResponse<TransactionResponse>.SuccessResponse(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving transaction");
+                return ServiceResponse<TransactionResponse>.FailureResponse("An error occurred while retrieving the transaction");
+            }
+        }
+
         public async Task<ServiceResponse<PagedResponse<TransactionResponse>>> GetAllTransactionsAsync(TransactionFilterRequest filter)
         {
             try
@@ -213,9 +234,9 @@ namespace EXE_BE.Services
         {
             try
             {
-                //var data = _payOS.verifyPaymentWebhookData(req);
-                var data = req.data;
-                // 1. Find the transaction by orderCode
+                var data = _payOS.verifyPaymentWebhookData(req);
+                //var data = req.data;
+
                 var transaction = await _transactionRepository.GetTransactionByIdAsync((int)data.orderCode);
                 if (transaction == null)
                 {

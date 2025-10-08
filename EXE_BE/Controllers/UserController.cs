@@ -27,7 +27,8 @@ namespace EXE_BE.Controllers
                 request.Username,
                 request.Email,
                 request.Password,
-                request.PhoneNumber);
+                request.PhoneNumber,
+                request.DateOfBirth);
 
             if (!result.Success)
             {

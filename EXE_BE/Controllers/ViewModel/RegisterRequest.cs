@@ -15,6 +15,9 @@ namespace EXE_BE.Controllers.ViewModel
         [MinLength(6)]
         public string Password { get; set; } = string.Empty;
 
+        [Required]
+        public DateOnly DateOfBirth { get; set; }
+
         public string? PhoneNumber { get; set; }
     }
 }

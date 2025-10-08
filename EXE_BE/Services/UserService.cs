@@ -26,7 +26,7 @@ namespace EXE_BE.Services
             _transactionRepository = transactionRepository;
         }
 
-        public async Task<ServiceResponse<Auth>> RegisterAsync(string username, string email, string password, string? phoneNumber)
+        public async Task<ServiceResponse<Auth>> RegisterAsync(string username, string email, string password, string? phoneNumber, DateOnly DateOfBirth)
         {
             // Validate inputs
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
@@ -53,6 +53,7 @@ namespace EXE_BE.Services
                 Email = email,
                 PasswordHash = HashPassword(password),
                 PhoneNumber = phoneNumber,
+                DateOfBirth = DateOfBirth,
                 Role = user_role.User,
                 SubscriptionType = subscription_type.Free,
             };

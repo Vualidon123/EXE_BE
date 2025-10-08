@@ -7,8 +7,8 @@ namespace EXE_BE.Controllers.ViewModel
         [JsonIgnore]
         public int UserId { get; set; }
         public UpgradePlan Plan { get; set; }
-        public string? returnUrl { get; set; } = "http://example.com";
-        public string? cancelUrl { get; set; } = "";
+        public string returnUrl { get; set; } = "http://example.com";
+        public string cancelUrl { get; set; } = "";
     }
 
     public enum UpgradePlan

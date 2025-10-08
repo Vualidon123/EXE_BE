@@ -30,6 +30,18 @@ namespace EXE_BE.Data.Repository
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
+        public async Task<Transaction?> GetTransactionByIdForUserAsync(int id, int userId = 0)
+        {
+            var query = _context.Set<Transaction>().AsQueryable();
+    
+            if (userId != 0)
+            {
+                query = query.Where(t => t.UserId == userId);
+            }
+    
+            return await query.FirstOrDefaultAsync(t => t.Id == id);
+        }
+
         public async Task<List<Transaction>> GetTransactionsByUserIdAsync(int userId)
         {
             return await _context.Set<Transaction>()
