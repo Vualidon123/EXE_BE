@@ -248,13 +248,16 @@ namespace EXE_BE.Services
                 if (data.code == "00" && data.amount == transaction.Amount)
                 {
                     transaction.Status = TransactionStatus.Completed;
+                    transaction.Reason += ". Thành công";
                 }
                 else
                 {
                     transaction.Status = TransactionStatus.Failed;
                     transaction.Reason += ". Chuyển tiền thất bại";
                 }
+                
                 await _transactionRepository.UpdateTransactionAsync(transaction);
+                _logger.LogInformation("Transaction {TransactionId} updated to status {Status}", transaction.Id, transaction.Status);
 
                 // 3. If payment successful, update user subscription type
                 if (transaction.Status == TransactionStatus.Completed)
@@ -269,6 +272,7 @@ namespace EXE_BE.Services
 
                     // Save user update
                     await _userRepository.UpdateUserAsync(user);
+                    _logger.LogInformation("User {UserId} subscription updated to {SubscriptionType}", user.Id, user.SubscriptionType);
                 }
             }
             catch (Exception ex)

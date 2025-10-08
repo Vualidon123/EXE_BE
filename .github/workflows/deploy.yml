@@ -23,4 +23,5 @@ jobs:
                     dotnet ef database update
                     dotnet publish -c Release -o out
                     sudo systemctl restart exe.service
+                    sleep 5
                     systemctl status exe.service
