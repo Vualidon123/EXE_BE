@@ -11,4 +11,9 @@ namespace EXE_BE.Controllers.ViewModel
         [Required]
         public string Password { get; set; } = string.Empty;
     }
+    public class GoogleRequest
+    {
+        [Required]
+        public string IdToken { get; set; }
+    }
 }

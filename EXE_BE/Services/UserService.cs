@@ -2,6 +2,7 @@
 using EXE_BE.Data.Repository;
 using EXE_BE.Models;
 using EXE_BE.Services.Models;
+using Google.Apis.Auth;
 using Microsoft.IdentityModel.Tokens;
 using Net.payOS.Types;
 using System.IdentityModel.Tokens.Jwt;
@@ -25,7 +26,36 @@ namespace EXE_BE.Services
             _transactionService = transactionService;
             _transactionRepository = transactionRepository;
         }
+        public async Task<ServiceResponse<Auth>> GoogleLoginAsync(GoogleRequest googleAuthDto)
+        {
+            try
+            {
+                // Verify Google ID token
+                var payload = await GoogleJsonWebSignature.ValidateAsync(
+                    googleAuthDto.IdToken,
+                    new GoogleJsonWebSignature.ValidationSettings
+                    {
+                        Audience = new[] { _configuration["GoogleAuth:ClientId"] } // Assuming IConfiguration is injected
+                    });
 
+                // Find or create user
+                var user = await _userRepository.FindOrCreateUserFromGoogleAsync(payload);
+
+                // Generate JWT token
+                var token = GenerateJwtToken(user);
+              
+               var auth= new Auth
+                {
+                    Token = token,
+                    User = user
+                };
+                return ServiceResponse<Auth>.SuccessResponse(auth, "Login with Google successful");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Invalid Google token");
+            }
+        }
         public async Task<ServiceResponse<Auth>> RegisterAsync(string username, string email, string password, string? phoneNumber, DateOnly DateOfBirth)
         {
             // Validate inputs

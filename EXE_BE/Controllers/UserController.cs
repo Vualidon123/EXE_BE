@@ -37,7 +37,25 @@ namespace EXE_BE.Controllers
 
             return Ok(result);
         }
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleRequest googleAuthDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
+                var response = await _userService.GoogleLoginAsync(googleAuthDto);
+                return Ok(response);
+            }
+           
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {

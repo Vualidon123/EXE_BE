@@ -1,4 +1,5 @@
 ﻿using EXE_BE.Models;
+using Google.Apis.Auth;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -83,6 +84,28 @@ namespace EXE_BE.Data.Repository
         public async Task<bool> UserExistsAsync(int id)
         {
             return await _context.Users.AnyAsync(u => u.Id == id);
+        }
+        public async Task<User> FindOrCreateUserFromGoogleAsync(GoogleJsonWebSignature.Payload payload)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == payload.Email);
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    UserName = payload.Name,
+                    Email = payload.Email,
+                    PasswordHash = "", // No password for Google users
+                    Role =user_role.User, // Default role
+                    
+                };
+
+                await CreateAsync(user);
+                user = await GetByEmailAsync(payload.Email); // Reload with Role if needed
+            }
+
+            return user;
         }
     }
 }
