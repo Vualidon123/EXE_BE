@@ -13,11 +13,11 @@ namespace EXE_BE.Controllers
     public class UserActivitiesController : ControllerBase
     {
         private readonly UserActivitiesSerivce _userActivitiesService;
-        private readonly EnergyUsageSerivce _energyUsage;
+        private readonly EnergyUsageService _energyUsage;
         private readonly FoodUsageService _foodUsage;
         private readonly PlasticUsageService _plasticUsage;
-        private readonly TrafficUsageSerivce _trafficUsage;
-        public UserActivitiesController(UserActivitiesSerivce userActivitiesService, TrafficUsageSerivce trafficUsage, EnergyUsageSerivce energyUsageSerivce, PlasticUsageService plasticUsageService, FoodUsageService foodUsageService)
+        private readonly TrafficUsageService _trafficUsage;
+        public UserActivitiesController(UserActivitiesSerivce userActivitiesService, TrafficUsageService trafficUsage, EnergyUsageService energyUsageSerivce, PlasticUsageService plasticUsageService, FoodUsageService foodUsageService)
         {
             _userActivitiesService = userActivitiesService;
             _trafficUsage = trafficUsage;

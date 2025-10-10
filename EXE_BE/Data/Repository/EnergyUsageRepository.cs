@@ -6,45 +6,50 @@ namespace EXE_BE.Data.Repository
     public class EnergyUsageRepository
     {
         private readonly AppDbContext _context;
+
         public EnergyUsageRepository(AppDbContext context)
         {
             _context = context;
         }
-        public async Task<EnergyUsage> AddEnergyUsageAsync(EnergyUsage energyUsage)
+
+        public async Task<EnergyUsage> GetByIdAsync(int id)
         {
-            
+            return await _context.EnergyUsages
+                .FirstOrDefaultAsync(eu => eu.Id == id);
+        }
+
+        public async Task<List<EnergyUsage>> GetAllAsync()
+        {
+            return await _context.EnergyUsages.ToListAsync();
+        }
+
+        public async Task<EnergyUsage> CreateAsync(EnergyUsage entity)
+        {
+            _context.EnergyUsages.Add(entity);
             await _context.SaveChangesAsync();
-            return energyUsage;
+            return entity;
         }
-        public async Task<EnergyUsage?> GetEnergyUsageByIdAsync(int id)
+
+        public async Task<EnergyUsage> UpdateAsync(EnergyUsage entity)
         {
-            return await _context.EnergyUsages.FindAsync(id);
-        }
-        public async Task UpdateEnergyUsageAsync(EnergyUsage energyUsage)
-        {
-            _context.EnergyUsages.Update(energyUsage);
+            _context.EnergyUsages.Update(entity);
             await _context.SaveChangesAsync();
+            return entity;
         }
-        public async Task DeleteEnergyUsageAsync(int id)
+
+        public async Task<bool> DeleteAsync(int id)
         {
-            var energyUsage = await _context.EnergyUsages.FindAsync(id);
-            if (energyUsage != null)
-            {
-                _context.EnergyUsages.Remove(energyUsage);
-                await _context.SaveChangesAsync();
-            }
+            var entity = await _context.EnergyUsages.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.EnergyUsages.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
-        public async Task<List<EnergyUsage>> GetEnergyUsageByUserId(int userId)
+        public async Task<EnergyUsage> GetByUserIdAsync(int userId)
         {
-            return await _context.EnergyUsages.
-                Where(x => x.UserActivities.UserId == userId).
-                ToListAsync();
-        }
-        public async Task<List<EnergyUsage>> GetEnergyUsages()
-        {
-            return await _context.EnergyUsages.
-                
-                ToListAsync();
+            return await _context.EnergyUsages
+                .FirstOrDefaultAsync(eu => eu.UserActivities.UserId == userId);
         }
     }
 }

@@ -7,48 +7,54 @@ namespace EXE_BE.Services
     public class FoodUsageService
     {
         private readonly FoodUsageRepository _foodUsageRepository;
-        private readonly FoodItemRepository _foodItemRepository;
-        private readonly CategorySelect _categorySelect;
-        public FoodUsageService(FoodUsageRepository foodUsageRepository, FoodItemRepository foodItemRepository,CategorySelect categorySelect)
+        private readonly CategorySelect CategorySelect = new CategorySelect();
+
+        public FoodUsageService(FoodUsageRepository foodUsageRepository)
         {
             _foodUsageRepository = foodUsageRepository;
-            _foodItemRepository = foodItemRepository;
-            _categorySelect = categorySelect;
         }
+
         public async Task<FoodUsage> AddFoodUsageAsync(FoodUsage foodUsage)
         {
             float totalCO2 = 0;
-            foreach (var item in foodUsage.FoodItems)
+            if (foodUsage.FoodItems != null)
             {
-                await _foodItemRepository.AddFoodItemAsync(item);
-                totalCO2+=  _categorySelect.FoodCO2Emission(item)* item.Weight;
+                foreach (var item in foodUsage.FoodItems)
+                {
+                    totalCO2 += CategorySelect.FoodCO2Emission(item) * item.Weight;
+                }
             }
             foodUsage.CO2emission = totalCO2;
-            return await _foodUsageRepository.AddFoodUsageAsync(foodUsage);
+            return await _foodUsageRepository.CreateAsync(foodUsage);
         }
+
         public async Task<FoodUsage?> GetFoodUsageByIdAsync(int id)
         {
-            return await _foodUsageRepository.GetFoodUsageByIdAsync(id);
+            return await _foodUsageRepository.GetByIdAsync(id);
         }
-        public async Task<List<FoodUsage>> GetFoodUsageByUserId(int userId)
-        {
-            return await _foodUsageRepository.GetFoodUsageByUserId(userId);
-        }
+
+        //public async Task<List<FoodUsage>> GetFoodUsageByUserId(int userId)
+        //{
+        //    return await _foodUsageRepository.GetByUserIdAsync(userId);
+        //}
+
         public async Task UpdateFoodUsageAsync(FoodUsage foodUsage)
         {
             float totalCO2 = 0;
-            foreach (var item in foodUsage.FoodItems)
+            if (foodUsage.FoodItems != null)
             {
-                await _foodItemRepository.UpdateFoodItemAsync(item);
-                totalCO2 += _categorySelect.FoodCO2Emission(item) * item.Weight;
+                foreach (var item in foodUsage.FoodItems)
+                {
+                    totalCO2 += CategorySelect.FoodCO2Emission(item) * item.Weight;
+                }
             }
             foodUsage.CO2emission = totalCO2;
-            await _foodUsageRepository.UpdateFoodUsageAsync(foodUsage);
+            await _foodUsageRepository.UpdateAsync(foodUsage);
         }
 
         public async Task DeleteFoodUsageAsync(int id)
         {
-            await _foodUsageRepository.DeleteFoodUsageAsync(id);
+            await _foodUsageRepository.DeleteAsync(id);
         }
     }
 }

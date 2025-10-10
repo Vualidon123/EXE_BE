@@ -4,38 +4,44 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EXE_BE.Services
 {
-    public class EnergyUsageSerivce
+    public class EnergyUsageService
     {
         private readonly EnergyUsageRepository _energyUsageRepository;
-        public EnergyUsageSerivce(EnergyUsageRepository energyUsageRepository)
+        private readonly UserActivitiesRepository _userActivitiesRepository;
+
+        public EnergyUsageService(EnergyUsageRepository energyUsageRepository, UserActivitiesRepository userActivitiesRepository)
         {
             _energyUsageRepository = energyUsageRepository;
+            _userActivitiesRepository = userActivitiesRepository;
         }
-        public async Task<EnergyUsage> AddEnergyUsageAsync(EnergyUsage energyUsage)
-        {
-            energyUsage.CO2emission= energyUsage.electricityconsumption * 0.6766f ; // Example calculation
-            return  await _energyUsageRepository.AddEnergyUsageAsync(energyUsage);
-        }
+
+       
+
         public async Task<EnergyUsage?> GetEnergyUsageByIdAsync(int id)
         {
-            return await _energyUsageRepository.GetEnergyUsageByIdAsync(id);
+            return await _energyUsageRepository.GetByIdAsync(id);
         }
+
         public async Task UpdateEnergyUsageAsync(EnergyUsage energyUsage)
         {
+            // Validate ActivityId          
             energyUsage.CO2emission = energyUsage.electricityconsumption * 0.6766f;
-            await _energyUsageRepository.UpdateEnergyUsageAsync(energyUsage);
+            await _energyUsageRepository.UpdateAsync(energyUsage);
         }
+
         public async Task DeleteEnergyUsageAsync(int id)
         {
-             await _energyUsageRepository.DeleteEnergyUsageAsync(id);
+            await _energyUsageRepository.DeleteAsync(id);
         }
-        public async Task<List<EnergyUsage>> GetEnergyUsageByUserId(int userId)
+
+        public async Task<EnergyUsage> GetEnergyUsageByUserId(int userId)
         {
-            return await _energyUsageRepository.GetEnergyUsageByUserId(userId);
+            return await _energyUsageRepository.GetByUserIdAsync(userId);
         }
+
         public async Task<List<EnergyUsage>> GetEnergyUsages()
         {
-            return await _energyUsageRepository.GetEnergyUsages();
+            return await _energyUsageRepository.GetAllAsync();
         }
     }
 

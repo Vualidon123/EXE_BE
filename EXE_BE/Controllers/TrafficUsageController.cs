@@ -9,8 +9,8 @@ namespace EXE_BE.Controllers
     [ApiController]
     public class TrafficUsageController : ControllerBase
     {
-        private readonly TrafficUsageSerivce _trafficUsageService;
-        public TrafficUsageController(TrafficUsageSerivce trafficUsageService)
+        private readonly TrafficUsageService _trafficUsageService;
+        public TrafficUsageController(TrafficUsageService trafficUsageService)
         {
             _trafficUsageService = trafficUsageService;
         }

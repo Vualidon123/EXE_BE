@@ -6,7 +6,7 @@
         public plastic_category PlasticCategory { get; set; } // Category of plastic item
         public float Weight { get; set; } // Weight in kg
         public int PlasticUsageId { get; set; } // Foreign key to PlasticUsage
-                                                
+        public PlasticUsage? PlasticUsage { get; set; } // Navigation property to PlasticUsage                   
     }
     public enum plastic_category
     {

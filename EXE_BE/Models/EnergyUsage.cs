@@ -10,7 +10,7 @@ namespace EXE_BE.Models
         public DateTime date { get; set; }
         public float electricityconsumption { get; set; }
         public float CO2emission { get; set; }
-        [JsonIgnore]
+       
         public virtual UserActivities? UserActivities { get; set; }
     }
 }

@@ -8,11 +8,11 @@ namespace EXE_BE.Services
     public class UserActivitiesSerivce
     {
         private readonly UserActivitiesRepository _userActivitiesRepository;
-        private readonly EnergyUsageSerivce _energyUsageRepository;
+        private readonly EnergyUsageService _energyUsageRepository;
         private readonly PlasticUsageService _plasticUsageRepository;
         private readonly FoodUsageService _foodUsageRepository;
-        private readonly TrafficUsageSerivce _trafficUsageRepository;
-        public UserActivitiesSerivce(UserActivitiesRepository userActivitiesRepository, EnergyUsageSerivce energyUsage, FoodUsageService foodUsageRepository, PlasticUsageService plasticUsageRepository, TrafficUsageSerivce trafficUsageRepository )
+        private readonly TrafficUsageService _trafficUsageRepository;
+        public UserActivitiesSerivce(UserActivitiesRepository userActivitiesRepository, EnergyUsageService energyUsage, FoodUsageService foodUsageRepository, PlasticUsageService plasticUsageRepository, TrafficUsageService trafficUsageRepository )
         {
             _userActivitiesRepository = userActivitiesRepository;
             _energyUsageRepository= energyUsage;

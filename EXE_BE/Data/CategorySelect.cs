@@ -5,27 +5,7 @@ namespace EXE_BE.Data
 {
     public class CategorySelect
     {
-       /* public float CalculateTotalCO2Emission(UserActivities activities)
-        {
-            float totalCO2 = 0;
-            if (activities.PlasticUsage != null)
-            {
-                totalCO2 += activities.PlasticUsage.CO2emission;
-            }
-            if (activities.TrafficUsage != null)
-            {
-                totalCO2 += activities.TrafficUsage.CO2emission;
-            }
-            if (activities.FoodUsage != null)
-            {
-                totalCO2 += activities.FoodUsage.CO2emission;
-            }
-            if (activities.EnergyUsage != null)
-            {
-                totalCO2 += activities.EnergyUsage.CO2emission;
-            }
-            return totalCO2;
-        }*/
+       
         public float FoodCO2Emission(FoodItem fooditem)
         {
             float co2PerKg;
@@ -63,27 +43,6 @@ namespace EXE_BE.Data
             }
             return co2PerKg;
         }
-      /*  public float EnergyCO2Emission(UserActivities activities)
-        {
-            float totalCO2 = 0;
-            if (activities.PlasticUsage != null)
-            {
-                totalCO2 += activities.PlasticUsage.CO2emission;
-            }
-            if (activities.TrafficUsage != null)
-            {
-                totalCO2 += activities.TrafficUsage.CO2emission;
-            }
-            if (activities.FoodUsage != null)
-            {
-                totalCO2 += activities.FoodUsage.CO2emission;
-            }
-            if (activities.EnergyUsage != null)
-            {
-                totalCO2 += activities.EnergyUsage.CO2emission;
-            }
-            return totalCO2;
-        }*/
         public float TrafficCO2Emission(TrafficUsage trafficUsage)
         {
             float co2PerKm;

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EXE_BE.Data.Repository
 {
-    public class FoodUsageRepository
+    public class FoodUsageRepository 
     {
         private readonly AppDbContext _context;
 
@@ -13,78 +13,42 @@ namespace EXE_BE.Data.Repository
             _context = context;
         }
 
-        public async Task<FoodUsage> AddFoodUsageAsync(FoodUsage foodUsage)
+        public async Task<FoodUsage> GetByIdAsync(int id)
         {
-           /* float co2PerKg;
-            switch (foodUsage.FoodItems?.FirstOrDefault()?.FoodCategory)
-            {
-                case food_category.Beef:
-                    co2PerKg = 27.0f;
-                    break;
-                case food_category.Lamb:
-                    co2PerKg = 39.2f;
-                    break;
-                case food_category.Pork:
-                    co2PerKg = 12.1f;
-                    break;
-                case food_category.Chicken:
-                    co2PerKg = 6.9f;
-                    break;
-                case food_category.Fish:
-                    co2PerKg = 6.1f;
-                    break;
-                case food_category.Eggs:
-                    co2PerKg = 4.8f;
-                    break;
-                case food_category.Rice:
-                    co2PerKg = 4.0f;
-                    break;
-                case food_category.Vegetables:
-                    co2PerKg = 2.0f;
-                    break;
-                case food_category.Others:
-                    co2PerKg = 5.0f; // Average value for other food items
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(foodUsage.FoodItems), "Unknown food category");
-            }*/
+            return await _context.FoodUsages
+                .Include(fu => fu.FoodItems)
+                .FirstOrDefaultAsync(fu => fu.Id == id);
+        }
 
+        public async Task<List<FoodUsage>> GetAllAsync()
+        {
+            return await _context.FoodUsages
+                .Include(fu => fu.FoodItems)
+                .ToListAsync();
+        }
 
-            _context.FoodUsages.Add(foodUsage);
-            /*foreach (var item in foodUsage.FoodItems)
-            {
-                _context.FoodItems.Add(item);
-            }*/
+        public async Task<FoodUsage> CreateAsync(FoodUsage entity)
+        {
+            _context.FoodUsages.Add(entity);
             await _context.SaveChangesAsync();
-            return foodUsage;
+            return entity;
         }
 
-        public async Task<FoodUsage?> GetFoodUsageByIdAsync(int id)
+        public async Task<FoodUsage> UpdateAsync(FoodUsage entity)
         {
-            return await _context.FoodUsages.FirstOrDefaultAsync(f=>f.Id==id);
-        }
-        public async Task<List<FoodUsage>> GetFoodUsageByUserId(int userId)
-        {
-            return await _context.FoodUsages.
-                Include(x => x.FoodItems).
-                Where(x => x.UserActivities.UserId == userId).
-                ToListAsync();
-        }
-
-        public async Task UpdateFoodUsageAsync(FoodUsage foodUsage)
-        {
-            _context.FoodUsages.Update(foodUsage);
+            _context.FoodUsages.Update(entity);
             await _context.SaveChangesAsync();
-        }
-        public async Task DeleteFoodUsageAsync(int id)
-        {
-            var foodUsage = await _context.FoodUsages.FindAsync(id);
-            if (foodUsage != null)
-            {
-                _context.FoodUsages.Remove(foodUsage);
-                await _context.SaveChangesAsync();
-            }
+            return entity;
         }
 
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var entity = await _context.FoodUsages.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.FoodUsages.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

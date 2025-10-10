@@ -9,8 +9,8 @@ namespace EXE_BE.Controllers
     [ApiController]
     public class EnergyUsageController : ControllerBase
     {
-        private readonly EnergyUsageSerivce _energyUsageService;
-        public EnergyUsageController(EnergyUsageSerivce energyUsageService)
+        private readonly EnergyUsageService _energyUsageService;
+        public EnergyUsageController(EnergyUsageService energyUsageService)
         {
             _energyUsageService = energyUsageService;
         }
@@ -30,17 +30,17 @@ namespace EXE_BE.Controllers
             }
             return Ok(energyUsage);
         }
-        [HttpPost]
-        public async Task<IActionResult> AddEnergyUsage([FromBody] EnergyUsageDto request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var energyUsage= request.ToEntity();
-            var createdEnergyUsage = await _energyUsageService.AddEnergyUsageAsync(energyUsage);
-            return CreatedAtAction(nameof(GetEnergyUsageById), new { id = createdEnergyUsage.Id }, createdEnergyUsage);
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> AddEnergyUsage([FromBody] EnergyUsageDto request)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    var energyUsage= request.ToEntity();
+        //    var createdEnergyUsage = await _energyUsageService.AddEnergyUsageAsync(energyUsage);
+        //    return CreatedAtAction(nameof(GetEnergyUsageById), new { id = createdEnergyUsage.Id }, createdEnergyUsage);
+        //}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEnergyUsage(int id, [FromBody] EnergyUsageDto request)
         {

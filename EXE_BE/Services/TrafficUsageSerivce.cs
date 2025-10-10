@@ -5,32 +5,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EXE_BE.Services
 {
-    public class TrafficUsageSerivce
+    public class TrafficUsageService
     {
         private readonly TrafficUsageRepository _trafficUsageRepository;
-        private readonly CategorySelect _categorySelect;
-        public TrafficUsageSerivce(TrafficUsageRepository trafficUsageRepository,CategorySelect categorySelect)
+        private readonly CategorySelect CategorySelect = new CategorySelect();
+        public TrafficUsageService(TrafficUsageRepository trafficUsageRepository)
         {
             _trafficUsageRepository = trafficUsageRepository;
-            _categorySelect = categorySelect;
         }
+
         public async Task<TrafficUsage> AddTrafficUsageAsync(TrafficUsage trafficUsage)
-        {         
-            trafficUsage.CO2emission = _categorySelect.TrafficCO2Emission(trafficUsage)*trafficUsage.distance;
-            return await _trafficUsageRepository.AddTrafficUsageAsync(trafficUsage);
+        {
+            trafficUsage.CO2emission = CategorySelect.TrafficCO2Emission(trafficUsage) * trafficUsage.distance;
+            return await _trafficUsageRepository.CreateAsync(trafficUsage);
         }
+
         public async Task<TrafficUsage?> GetTrafficUsageByIdAsync(int id)
         {
-            return await _trafficUsageRepository.GetTrafficUsageByIdAsync(id);
+            return await _trafficUsageRepository.GetByIdAsync(id);
         }
+
         public async Task UpdateTrafficUsageAsync(TrafficUsage trafficUsage)
         {
-            trafficUsage.CO2emission = _categorySelect.TrafficCO2Emission(trafficUsage) * trafficUsage.distance;
-            await _trafficUsageRepository.UpdateTrafficUsageAsync(trafficUsage);
+            trafficUsage.CO2emission = CategorySelect.TrafficCO2Emission(trafficUsage) * trafficUsage.distance;
+            await _trafficUsageRepository.UpdateAsync(trafficUsage);
         }
+
         public async Task DeleteTrafficUsageAsync(int id)
         {
-            await _trafficUsageRepository.DeleteTrafficUsageAsync(id);
+            await _trafficUsageRepository.DeleteAsync(id);
         }
     }
 }

@@ -6,7 +6,9 @@
         public food_category FoodCategory { get; set; } // Category of food item
         public float Weight { get; set; } // Weight in kg
         public int FoodUsageId { get; set; } // Foreign key to FoodUsage
+        public FoodUsage? FoodUsage { get; set; } // Navigation property to FoodUsage
     }
+
     public enum food_category
     {
         Beef = 1,

@@ -36,13 +36,13 @@ builder.Services.AddScoped<PlasticItemRepository>();
 builder.Services.AddScoped<CategorySelect>();
 
 builder.Services.AddScoped<EnergyUsageRepository>();
-builder.Services.AddScoped<EnergyUsageSerivce>();
+builder.Services.AddScoped<EnergyUsageService>();
 
 builder.Services.AddScoped<PlasticUsageRepository>();
 builder.Services.AddScoped<PlasticUsageService>();
 
 builder.Services.AddScoped<TrafficUsageRepository>();
-builder.Services.AddScoped<TrafficUsageSerivce>();
+builder.Services.AddScoped<TrafficUsageService>();
 
 builder.Services.AddScoped<UserActivitiesSerivce>();
 builder.Services.AddScoped<UserActivitiesRepository>();

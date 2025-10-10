@@ -28,7 +28,7 @@ namespace EXE_BE.Controllers
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetFoodUsageByUserId(int userId)
         {
-            var foodUsages = await _foodUsageService.GetFoodUsageByUserId(userId);
+            var foodUsages = await _foodUsageService.GetFoodUsageByIdAsync(userId);
             return Ok(foodUsages);
         }
         [HttpPost]

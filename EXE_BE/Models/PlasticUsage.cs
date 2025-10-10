@@ -12,7 +12,7 @@ namespace EXE_BE.Models
         public float CO2emission { get; set; }
         public List<PlasticItem>? PlasticItems { get; set; }
 
-        [JsonIgnore]
+      
         public virtual UserActivities? UserActivities { get; set; }
         
     }

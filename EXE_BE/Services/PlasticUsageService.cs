@@ -8,47 +8,53 @@ namespace EXE_BE.Services
     public class PlasticUsageService
     {
         private readonly PlasticUsageRepository _plasticUsageRepository;
-        private readonly PlasticItemRepository _plasticItemRepository;
-        private readonly CategorySelect _categorySelect;    
-        public PlasticUsageService(PlasticUsageRepository plasticUsageRepository, PlasticItemRepository plasticItemRepository,CategorySelect categorySelect)
+        private readonly CategorySelect CategorySelect = new CategorySelect();
+        public PlasticUsageService(PlasticUsageRepository plasticUsageRepository)
         {
             _plasticUsageRepository = plasticUsageRepository;
-            _plasticItemRepository = plasticItemRepository;
-            _categorySelect = categorySelect;
         }
+
         public async Task<PlasticUsage> AddPlasticUsageAsync(PlasticUsage plasticUsage)
         {
-            float totalCO2=0;
-            foreach (var item in plasticUsage.PlasticItems)
+            float totalCO2 = 0;
+            if (plasticUsage.PlasticItems != null)
             {
-                await _plasticItemRepository.AddPlasticItemAsync(item);
-                totalCO2 += _categorySelect.PlasticCO2Emission(item)*item.Weight;
+                foreach (var item in plasticUsage.PlasticItems)
+                {
+                    totalCO2 += CategorySelect.PlasticCO2Emission(item) * item.Weight;
+                }
             }
-            plasticUsage.CO2emission=totalCO2;
-            return await _plasticUsageRepository.AddPlasticUsageAsync(plasticUsage);
+            plasticUsage.CO2emission = totalCO2;
+            return await _plasticUsageRepository.CreateAsync(plasticUsage);
         }
+
         public async Task<PlasticUsage?> GetPlasticUsageByIdAsync(int id)
         {
-            return await _plasticUsageRepository.GetPlasticUsageByIdAsync(id);
+            return await _plasticUsageRepository.GetByIdAsync(id);
         }
-        public async Task<List<PlasticUsage>> GetPlasticUsageByUserId(int userId)
+
+        public async Task<PlasticUsage> GetPlasticUsageByUserId(int userId)
         {
-          return await _plasticUsageRepository.GetPlasticUsageByUserId(userId);
+            return await _plasticUsageRepository.GetByUserIdAsync(userId);
         }
+
         public async Task UpdatePlasticUsageAsync(PlasticUsage plasticUsage)
         {
             float totalCO2 = 0;
-            foreach (var item in plasticUsage.PlasticItems)
+            if (plasticUsage.PlasticItems != null)
             {
-                await _plasticItemRepository.UpdatePlasticItemAsync(item);
-                totalCO2 += _categorySelect.PlasticCO2Emission(item) * item.Weight;
+                foreach (var item in plasticUsage.PlasticItems)
+                {
+                    totalCO2 += CategorySelect.PlasticCO2Emission(item) * item.Weight;
+                }
             }
             plasticUsage.CO2emission = totalCO2;
-            await _plasticUsageRepository.UpdatePlasticUsageAsync(plasticUsage);
+            await _plasticUsageRepository.UpdateAsync(plasticUsage);
         }
+
         public async Task DeletePlasticUsageAsync(int id)
         {
-            await _plasticUsageRepository.DeletePlasticUsageAsync(id);
+            await _plasticUsageRepository.DeleteAsync(id);
         }
     }
 }
