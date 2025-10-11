@@ -5,6 +5,7 @@ using EXE_BE.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace EXE_BE.Controllers
 {
@@ -41,7 +42,7 @@ namespace EXE_BE.Controllers
             // Map input to entity
             var userActivities = new UserActivities
             {
-                UserId = 1,//Claim ,
+                UserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),//Claim ,
                 Date = DateTime.UtcNow,
                 PlasticUsage = new PlasticUsage
                 {
