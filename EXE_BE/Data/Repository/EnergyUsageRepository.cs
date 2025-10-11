@@ -30,11 +30,11 @@ namespace EXE_BE.Data.Repository
             return entity;
         }
 
-        public async Task<EnergyUsage> UpdateAsync(EnergyUsage entity)
+        public async Task UpdateAsync(EnergyUsage entity)
         {
             _context.EnergyUsages.Update(entity);
             await _context.SaveChangesAsync();
-            return entity;
+           
         }
 
         public async Task<bool> DeleteAsync(int id)

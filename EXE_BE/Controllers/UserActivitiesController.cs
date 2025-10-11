@@ -94,8 +94,10 @@ namespace EXE_BE.Controllers
         public async Task<IActionResult> GetUserActivitiesByUserId(int userId)
         {
             var activities = await _userActivitiesService.GetUserActivitiesByUserIdAsync(userId);
-
-            return Ok(activities);
+            var activitiesDto = activities
+                .Select(a => a.ToDto()) // use the extension method mapper
+                .ToList();
+            return Ok(activitiesDto);
         }
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)

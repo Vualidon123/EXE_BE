@@ -45,17 +45,19 @@ namespace EXE_BE.Controllers
         public async Task<IActionResult> UpdateEnergyUsage(int id, [FromBody] EnergyUsageDto request)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
+
             var existingEnergyUsage = await _energyUsageService.GetEnergyUsageByIdAsync(id);
             if (existingEnergyUsage == null)
-            {
                 return NotFound();
-            }
-            var updatedEnergyUsage = request.ToEntity();
-            updatedEnergyUsage.Id = id; // Ensure the ID is set for the update
-            await _energyUsageService.UpdateEnergyUsageAsync(updatedEnergyUsage);
+
+            // 🔥 Update the tracked entity directly
+            existingEnergyUsage.ActivityId = request.ActivityId;
+            existingEnergyUsage.date = request.Date;
+            existingEnergyUsage.electricityconsumption = request.ElectricityConsumption;
+            existingEnergyUsage.CO2emission = request.CO2Emission;
+
+            await _energyUsageService.UpdateEnergyUsageAsync(existingEnergyUsage);
             return NoContent();
         }
         [HttpDelete("{id}")]
