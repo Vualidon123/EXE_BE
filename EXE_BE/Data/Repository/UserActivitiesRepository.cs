@@ -35,6 +35,10 @@ namespace EXE_BE.Data.Repository
         public async Task<UserActivities?> GetUserActivitiesByIdAsync(int id)
         {
             return await _context.UserActivities.
+                 Include(c => c.PlasticUsage).
+                Include(c => c.TrafficUsage).
+                Include(c => c.FoodUsage).
+                Include(c => c.EnergyUsage).
                 FirstOrDefaultAsync(u => u.Id == id);
         }
         public async Task UpdateUserActivitiesAsync(UserActivities userActivities)
@@ -84,7 +88,27 @@ namespace EXE_BE.Data.Repository
                 .Include(u => u.UserActivities.Where(a => a.Date >= sevenDaysAgo))
                 .ToListAsync();
         }
+        public async Task UpdateTotalCO2EmissionAsync(int userActivitiesId)
+        {
+            var userActivities = await _context.UserActivities
+                .Include(u => u.PlasticUsage)
+                .Include(u => u.TrafficUsage)
+                .Include(u => u.FoodUsage)
+                .Include(u => u.EnergyUsage)
+                .FirstOrDefaultAsync(u => u.Id == userActivitiesId);
 
+            if (userActivities != null)
+            {
+                userActivities.TotalCO2Emission =
+                    (userActivities.PlasticUsage?.CO2emission ?? 0) +
+                    (userActivities.TrafficUsage?.CO2emission ?? 0) +
+                    (userActivities.FoodUsage?.CO2emission ?? 0) +
+                    (userActivities.EnergyUsage?.CO2emission ?? 0);
+
+                _context.UserActivities.Update(userActivities);
+                await _context.SaveChangesAsync();
+            }
+        }
 
     }
 

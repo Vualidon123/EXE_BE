@@ -1,4 +1,5 @@
 ﻿using EXE_BE.Controllers.ViewModel;
+using EXE_BE.Data.Repository;
 using EXE_BE.Models;
 using EXE_BE.Services;
 using Microsoft.AspNetCore.Http;
@@ -11,9 +12,11 @@ namespace EXE_BE.Controllers
     public class FoodUsageController : ControllerBase
     {
         private readonly FoodUsageService _foodUsageService;
-        public FoodUsageController(FoodUsageService foodUsageService)
+        private readonly UserActivitiesSerivce _userActivitiesSerivce;
+        public FoodUsageController(FoodUsageService foodUsageService, UserActivitiesSerivce userActivitiesSerivce)
         {
             _foodUsageService = foodUsageService;
+            _userActivitiesSerivce = userActivitiesSerivce;
         }
         [HttpGet]
         public async Task<IActionResult> GetFoodUsageById(int id)
@@ -45,8 +48,12 @@ namespace EXE_BE.Controllers
             {
                 return BadRequest();
             }
-            var foodUsage= request.ToEntity();
+            var foodUsage = request.ToEntity();
             await _foodUsageService.UpdateFoodUsageAsync(foodUsage);
+
+            // Update TotalCO2Emission in UserActivities
+            await _userActivitiesSerivce.UpdateTotalCO2EmissionAsync(foodUsage.ActivityId);
+
             return NoContent();
         }
         [HttpDelete("{id}")]

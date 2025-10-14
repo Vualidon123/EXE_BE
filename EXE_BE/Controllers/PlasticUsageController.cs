@@ -11,10 +11,12 @@ namespace EXE_BE.Controllers
     public class PlasticUsageController : ControllerBase
     {
         private readonly PlasticUsageService _plasticUsageService;  
-        public PlasticUsageController(PlasticUsageService plasticUsageService)
+        private readonly UserActivitiesSerivce _userActivitiesSerivce;
+        public PlasticUsageController(PlasticUsageService plasticUsageService, UserActivitiesSerivce userActivitiesSerivce)
         {
             _plasticUsageService = plasticUsageService;
-        }   
+            _userActivitiesSerivce = userActivitiesSerivce;
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPlasticUsageById(int id)
         {
@@ -47,6 +49,7 @@ namespace EXE_BE.Controllers
             }
             var plasticUsage = request.ToEntity();
             await _plasticUsageService.UpdatePlasticUsageAsync(plasticUsage);
+            await _userActivitiesSerivce.UpdateTotalCO2EmissionAsync(plasticUsage.ActivityId);
             return NoContent();
         }
         [HttpDelete("{id}")]

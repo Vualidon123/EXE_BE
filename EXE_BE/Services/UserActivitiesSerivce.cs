@@ -12,13 +12,13 @@ namespace EXE_BE.Services
         private readonly PlasticUsageService _plasticUsageRepository;
         private readonly FoodUsageService _foodUsageRepository;
         private readonly TrafficUsageService _trafficUsageRepository;
-        public UserActivitiesSerivce(UserActivitiesRepository userActivitiesRepository, EnergyUsageService energyUsage, FoodUsageService foodUsageRepository, PlasticUsageService plasticUsageRepository, TrafficUsageService trafficUsageRepository )
+        public UserActivitiesSerivce(UserActivitiesRepository userActivitiesRepository, EnergyUsageService energyUsage, FoodUsageService foodUsageRepository, PlasticUsageService plasticUsageRepository, TrafficUsageService trafficUsageRepository)
         {
             _userActivitiesRepository = userActivitiesRepository;
-            _energyUsageRepository= energyUsage;
-            _foodUsageRepository= foodUsageRepository;
-            _plasticUsageRepository= plasticUsageRepository;
-            _trafficUsageRepository= trafficUsageRepository;
+            _energyUsageRepository = energyUsage;
+            _foodUsageRepository = foodUsageRepository;
+            _plasticUsageRepository = plasticUsageRepository;
+            _trafficUsageRepository = trafficUsageRepository;
         }
         public async Task<UserActivities> AddUserActivitiesAsync(UserActivities userActivities)
         {
@@ -49,7 +49,7 @@ namespace EXE_BE.Services
                 userActivities.EnergyUsage.ActivityId = createdActivity.Id;
                 await _energyUsageRepository.UpdateEnergyUsageAsync(userActivities.EnergyUsage);
             }
-            userActivities.TotalCO2Emission= (userActivities.PlasticUsage?.CO2emission ?? 0) +
+            userActivities.TotalCO2Emission = (userActivities.PlasticUsage?.CO2emission ?? 0) +
                                              (userActivities.FoodUsage?.CO2emission ?? 0) +
                                              (userActivities.TrafficUsage?.CO2emission ?? 0) +
                                              (userActivities.EnergyUsage?.CO2emission ?? 0);
@@ -60,11 +60,11 @@ namespace EXE_BE.Services
         {
             return await _userActivitiesRepository.GetUserActivitiesByIdAsync(id);
         }
-       public async Task<List<UserActivities>> GetUserActivitiesByUserIdAsync(int userId)
-       { 
-            return await _userActivitiesRepository.GetUserActivitiesByUserIdAsync(userId); 
-       }
-       public async Task UpdateUserActivitiesAsync(UserActivities userActivities)
+        public async Task<List<UserActivities>> GetUserActivitiesByUserIdAsync(int userId)
+        {
+            return await _userActivitiesRepository.GetUserActivitiesByUserIdAsync(userId);
+        }
+        public async Task UpdateUserActivitiesAsync(UserActivities userActivities)
         {
             await _userActivitiesRepository.UpdateUserActivitiesAsync(userActivities);
         }
@@ -91,6 +91,10 @@ namespace EXE_BE.Services
 
             return leaderboard;
         }
-    }   
+        public async Task UpdateTotalCO2EmissionAsync(int userActivitiesId)
+        {
+            await _userActivitiesRepository.UpdateTotalCO2EmissionAsync(userActivitiesId);
+        }
 
+    }
 }

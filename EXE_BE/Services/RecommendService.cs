@@ -8,7 +8,7 @@ namespace EXE_BE.Services
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey = "AIzaSyCrii-etsVL-coPXrXz6LEfLUtnPnz-Cks";
-        private readonly string _model = "gemini-1.5-flash";
+        private readonly string _model = "gemini-2.5-flash";
         private readonly UserActivitiesSerivce _userActivitiesSerivce ;
         public RecommendService(HttpClient httpClient, UserActivitiesSerivce userActivitiesSerivce)
         {
@@ -32,29 +32,33 @@ namespace EXE_BE.Services
                 $"Based on this activity summary:\n{activityText}\n" +
                 "give me short and concise advice to reduce my carbon footprint.";
 
-            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={_apiKey}";
+            var url = $"https://generativelanguage.googleapis.com/v1/models/{_model}:generateContent?key={_apiKey}";
 
             var requestBody = new
             {
                 contents = new[]
                 {
-            new
+        new
+        {
+            role = "user",
+            parts = new[]
             {
-                role = "user",
-                parts = new[] { new { text = userPrompt } }
+                new { text = userPrompt }
             }
-        },
-                systemInstruction = new
-                {
-                    role = "system",
-                    parts = new[] { new { text = "Bạn là chatbot cho lời khuyên." } }
-                }
+        }
+    }
             };
 
             var json = JsonSerializer.Serialize(requestBody);
             var response = await _httpClient.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
-            var responseJson = await response.Content.ReadAsStringAsync();
 
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Gemini API Error: {response.StatusCode} - {errorContent}");
+            }
+
+            var responseJson = await response.Content.ReadAsStringAsync();
             using var doc = JsonDocument.Parse(responseJson);
             var aiReply = doc.RootElement
                              .GetProperty("candidates")[0]

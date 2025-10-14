@@ -58,7 +58,7 @@ namespace EXE_BE.Data
 
                 // One-to-Many with User
                 entity.HasOne(e => e.User)
-                      .WithMany()
+                      .WithMany(u => u.UserActivities)
                       .HasForeignKey(e => e.UserId)
                       .OnDelete(DeleteBehavior.Restrict);
             });

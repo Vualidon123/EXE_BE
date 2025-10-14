@@ -1,4 +1,5 @@
 ﻿using EXE_BE.Controllers.ViewModel;
+using EXE_BE.Data.Repository;
 using EXE_BE.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,11 @@ namespace EXE_BE.Controllers
     public class EnergyUsageController : ControllerBase
     {
         private readonly EnergyUsageService _energyUsageService;
-        public EnergyUsageController(EnergyUsageService energyUsageService)
+        private readonly UserActivitiesSerivce _userActivitiesSerivce;
+        public EnergyUsageController(EnergyUsageService energyUsageService, UserActivitiesSerivce userActivitiesSerivce)
         {
             _energyUsageService = energyUsageService;
+            _userActivitiesSerivce = userActivitiesSerivce;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllEnergyUsages()
@@ -51,13 +54,16 @@ namespace EXE_BE.Controllers
             if (existingEnergyUsage == null)
                 return NotFound();
 
-            // 🔥 Update the tracked entity directly
             existingEnergyUsage.ActivityId = request.ActivityId;
             existingEnergyUsage.date = request.Date;
             existingEnergyUsage.electricityconsumption = request.ElectricityConsumption;
             existingEnergyUsage.CO2emission = request.CO2Emission;
 
             await _energyUsageService.UpdateEnergyUsageAsync(existingEnergyUsage);
+
+            // Update TotalCO2Emission in UserActivities
+            await _userActivitiesSerivce.UpdateTotalCO2EmissionAsync(existingEnergyUsage.ActivityId);
+
             return NoContent();
         }
         [HttpDelete("{id}")]

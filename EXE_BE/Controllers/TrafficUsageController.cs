@@ -10,9 +10,11 @@ namespace EXE_BE.Controllers
     public class TrafficUsageController : ControllerBase
     {
         private readonly TrafficUsageService _trafficUsageService;
-        public TrafficUsageController(TrafficUsageService trafficUsageService)
+        private readonly UserActivitiesSerivce _userActivitiesSerivce;
+        public TrafficUsageController(TrafficUsageService trafficUsageService, UserActivitiesSerivce userActivitiesSerivce)
         {
             _trafficUsageService = trafficUsageService;
+            _userActivitiesSerivce = userActivitiesSerivce;
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTrafficUsageById(int id)
@@ -46,6 +48,7 @@ namespace EXE_BE.Controllers
             }
             var trafficUsage = request.ToEntity();
             await _trafficUsageService.UpdateTrafficUsageAsync(trafficUsage);
+            await _userActivitiesSerivce.UpdateTotalCO2EmissionAsync(trafficUsage.ActivityId);
             return NoContent();
         }
         [HttpDelete("{id}")]
