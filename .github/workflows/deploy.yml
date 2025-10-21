@@ -20,8 +20,12 @@ jobs:
                 script: |
                     cd EXE_BE/EXE_BE
                     git pull
+                    export ASPNETCORE_ENVIRONMENT=Production
+                    echo "--------------Updating Database----------------"
                     dotnet ef database update
+                    echo "--------------Publishing Application----------------"
                     dotnet publish -c Release -o out
                     sudo systemctl restart exe.service
                     sleep 5
+                    echo "--------------Checking Service Status----------------"
                     systemctl status exe.service
