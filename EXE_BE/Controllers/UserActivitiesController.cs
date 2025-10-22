@@ -112,6 +112,16 @@ namespace EXE_BE.Controllers
 
             return Ok(activities);
         }
-        
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserActivitiesById(int id)
+        {
+            var activity = await _userActivitiesService.GetUserActivitiesByIdAsync(id);
+            if (activity == null)
+            {
+                return NotFound();
+            }
+            return Ok(activity.ToDto());
+        }
+
     }
 }
