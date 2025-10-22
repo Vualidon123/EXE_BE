@@ -4,6 +4,7 @@ using EXE_BE.Services;
 using EXE_BE.Controllers.ViewModel;
 using Net.payOS.Types;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace EXE_BE.Controllers
 {
@@ -48,7 +49,7 @@ namespace EXE_BE.Controllers
             if (User.IsInRole("User"))
             {
                 // Extract user ID from JWT claims
-                var claimUserId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+                var claimUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (!int.TryParse(claimUserId, out userId))
                 {
                     return Forbid(); // Invalid token, no user ID claim
@@ -88,7 +89,7 @@ namespace EXE_BE.Controllers
             if (User.IsInRole("User"))
             {
                 // Extract user ID from JWT claims
-                var claimUserId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+                var claimUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (claimUserId == null || int.Parse(claimUserId) != userId)
                 {
                     return Forbid(); // User can only access their own transactions
