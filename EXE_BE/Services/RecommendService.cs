@@ -7,7 +7,7 @@ namespace EXE_BE.Services
     public class RecommendService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey = "AIzaSyCrii-etsVL-coPXrXz6LEfLUtnPnz-Cks";
+        private readonly string _apiKey = "AIzaSyBz7XI7Ilgmgtt_14uGFiEzhhup7y49Bds";
         private readonly string _model = "gemini-2.5-flash";
         private readonly UserActivitiesSerivce _userActivitiesSerivce ;
         public RecommendService(HttpClient httpClient, UserActivitiesSerivce userActivitiesSerivce)
