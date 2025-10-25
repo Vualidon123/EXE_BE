@@ -23,7 +23,7 @@ namespace EXE_BE.Data
         public DbSet<PlasticItem> PlasticItems { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Notify> Notifies { get; set; }
-
+        public DbSet<Leaderboard> Leaderboards { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

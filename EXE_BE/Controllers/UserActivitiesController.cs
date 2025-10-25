@@ -36,6 +36,7 @@ namespace EXE_BE.Controllers
                 .Select(a => a. ToDto()) // use the extension method mapper
                 .ToList();
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddUserActivities([FromBody] UserActivitiesInputModel input)
         {

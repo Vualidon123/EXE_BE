@@ -5,4 +5,5 @@
         public string UserName { get; set; } = "";
         public float TotalCO2Emission { get; set; }
     }
+
 }

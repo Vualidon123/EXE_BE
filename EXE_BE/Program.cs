@@ -1,3 +1,4 @@
+using EXE_BE.BackgroundServices;
 using EXE_BE.Data;
 using EXE_BE.Data.Repository;
 using EXE_BE.Services;
@@ -52,6 +53,10 @@ builder.Services.AddScoped<TransactionService>();
 
 builder.Services.AddScoped<NotifyRepository>();
 builder.Services.AddScoped<NotifyService>();
+
+builder.Services.AddScoped<LeaderboardService>();
+builder.Services.AddScoped<LeaderboardRepository>();
+builder.Services.AddHostedService<LeaderboardBackgroundService>();
 
 builder.Services.AddScoped<RecommendService>();
 builder.Services.AddScoped<PayOS>(payOs =>
