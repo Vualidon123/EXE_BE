@@ -29,6 +29,11 @@ namespace EXE_BE.Data.Repository
             return await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
         }
 
+        public async Task<User?> GetByEmailOrUsernameAsync(string name)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == name || u.UserName == name);
+        }
+
         public async Task<User> CreateAsync(User user)
         {
             _context.Users.Add(user);

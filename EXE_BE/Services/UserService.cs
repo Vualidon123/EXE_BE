@@ -104,10 +104,10 @@ namespace EXE_BE.Services
             return ServiceResponse<Auth>.SuccessResponse(auth, "Registration successful");
         }
 
-        public async Task<ServiceResponse<Auth>> LoginAsync(string email, string password)
+        public async Task<ServiceResponse<Auth>> LoginAsync(string username, string password)
         {
             // Get user by email
-            var user = await _userRepository.GetByEmailAsync(email);
+            var user = await _userRepository.GetByEmailOrUsernameAsync(username);
             if (user == null)
             {
                 return ServiceResponse<Auth>.FailureResponse("Invalid email or password");
