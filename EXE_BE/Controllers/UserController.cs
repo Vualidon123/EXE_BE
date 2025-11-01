@@ -59,7 +59,7 @@ namespace EXE_BE.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var result = await _userService.LoginAsync(request.Username, request.Password);
+            var result = await _userService.LoginAsync(request.Email, request.Password);
 
             if (!result.Success)
             {
