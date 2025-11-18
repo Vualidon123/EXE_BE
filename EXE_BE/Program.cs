@@ -136,9 +136,9 @@ builder.Services.AddSwaggerGen(o =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("AllowLocal", builder =>
         {
-            builder
+            builder.WithOrigins("http://localhost:3000", "http://localhost:5099", "https://*.vercel.app")
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader();
